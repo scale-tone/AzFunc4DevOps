@@ -18,10 +18,12 @@ namespace AzFunc4DevOps.AzureDevOps
 
         private readonly TriggerExecutorRegistry _executorRegistry;
 
+        private static DateTimeOffset LastTimeExecuted = DateTimeOffset.UtcNow;
+
         [FunctionName(Global.FunctionPrefix + nameof(HeartBeatTimerTrigger))]
         public async Task Run
         (
-            [TimerTrigger(TimerCronExpr)] TimerInfo myTimer,
+            [TimerTrigger(TimerCronExpr)] TimerInfo timer,
             [DurableClient] IDurableEntityClient durableClient
         )
         {
@@ -29,12 +31,17 @@ namespace AzFunc4DevOps.AzureDevOps
             // Acts as a cancellation token.
             var whenToStop = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(TimerIntervalInSec - 1);
 
+            var signalParams = new GenericWatcherEntityParams { LastTimeExecuted = LastTimeExecuted, WhenToStop = whenToStop };
+
             // Just triggering all registered watcher entities
             var tasks = this._executorRegistry.GetEntityIds()
-                .Select(entityId => durableClient.SignalEntityAsync<IGenericWatcherEntity>(entityId, e => e.Watch(whenToStop)))
+                .Select(entityId => durableClient
+                    .SignalEntityAsync<IGenericWatcherEntity<GenericWatcherEntityParams>>(entityId, e => e.Watch(signalParams)))
                 .ToList();
 
             await Task.WhenAll(tasks);
+
+            LastTimeExecuted = DateTimeOffset.UtcNow;
         }
     }
 }

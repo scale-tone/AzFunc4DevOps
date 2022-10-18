@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,6 +28,27 @@ namespace AzFunc4DevOps.AzureDevOps
                 var hashString = string.Join("", hashBytes.Select(b => b.ToString("X2")));
 
                 return hashString;
+            }
+        }
+
+        public static IEnumerable<List<T>> ToBatches<T>(this IEnumerable<T> items, int batchSize)
+        {
+            var batch = new List<T>();
+
+            foreach(var item in items)
+            {
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    yield return batch;
+                    batch = new List<T>();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                yield return batch;
             }
         }
     }

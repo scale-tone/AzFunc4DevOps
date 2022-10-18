@@ -11,8 +11,7 @@ namespace AzFunc4DevOps.AzureDevOps
     {
         public static WorkItemTrackingHttpClient CreateClient(VssConnection connection)
         {
-            var workItemClient = connection.GetClient<WorkItemTrackingHttpClient>();
-            return workItemClient;
+            return connection.GetClient<WorkItemTrackingHttpClient>();
         }
     }
 }

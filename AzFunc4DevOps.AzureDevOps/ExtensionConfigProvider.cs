@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -72,14 +73,16 @@ namespace AzFunc4DevOps.AzureDevOps
                 .AddBindingRule<WorkItemClientAttribute>()
                 .BindToInput<WorkItemTrackingHttpClient>((_) => WorkItemClientAttribute.CreateClient(this._vssConnection));
 
-
             var workItemRule = context.AddBindingRule<WorkItemAttribute>();
-
             workItemRule.BindToCollector(attr => new WorkItemCollector(this._vssConnection, attr));
-
             workItemRule.BindToValueProvider(
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
             );
+
+//            context
+//                .AddBindingRule<BuildClientAttribute>()
+//                .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
+
         }
 
         /// <summary>

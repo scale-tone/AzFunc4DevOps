@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
@@ -10,7 +9,6 @@ using Microsoft.Azure.WebJobs.Host.Triggers;
 namespace AzFunc4DevOps.AzureDevOps 
 {
     public class GenericTriggerBinding<TWatcherEntity, TBindingValue> : ITriggerBinding
-        where TWatcherEntity: IGenericWatcherEntity
     {
         public GenericTriggerBinding(GenericTriggerAttribute attribute, TriggerExecutorRegistry executorRegistry) { 
             this._triggerAttribute = attribute;
