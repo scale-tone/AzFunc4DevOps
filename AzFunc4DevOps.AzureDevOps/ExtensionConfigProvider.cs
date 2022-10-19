@@ -70,6 +70,15 @@ namespace AzFunc4DevOps.AzureDevOps
                 );
 
             context
+                .AddBindingRule<BuildStatusChangedTriggerAttribute>()
+                .BindToTrigger(
+                    new GenericTriggerBindingProvider<
+                        BuildStatusChangedTriggerAttribute, 
+                        GenericTriggerBinding<BuildStatusChangedWatcherEntity, BuildProxy>
+                    > (this._executorRegistry)
+                );
+
+            context
                 .AddBindingRule<WorkItemClientAttribute>()
                 .BindToInput<WorkItemTrackingHttpClient>((_) => WorkItemClientAttribute.CreateClient(this._vssConnection));
 
@@ -79,9 +88,9 @@ namespace AzFunc4DevOps.AzureDevOps
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
             );
 
-//            context
-//                .AddBindingRule<BuildClientAttribute>()
-//                .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
+            context
+                .AddBindingRule<BuildClientAttribute>()
+                .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
 
         }
 

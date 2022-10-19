@@ -6,17 +6,10 @@ namespace AzFunc4DevOps.AzureDevOps
     [Binding]    
     public class WorkItemCreatedTriggerAttribute : GenericTriggerAttribute
     {
+        [AutoResolve]
         public string ProjectName { get; set; }
+
+        [AutoResolve]
         public string WiqlQueryWhereClause { get; set; }
-
-        public override string GetWatcherEntityKey()
-        {
-            if (string.IsNullOrWhiteSpace(this.ProjectName))
-            {
-                throw new ArgumentException("Non-empty ProjectName is required");
-            }
-
-            return $"{this.ProjectName}-{this.WiqlQueryWhereClause}".GetMd5Hash();
-        }
     }
 }

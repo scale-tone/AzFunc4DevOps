@@ -51,5 +51,10 @@ namespace AzFunc4DevOps.AzureDevOps
                 yield return batch;
             }
         }
+
+        public static bool In<T>(this T val, params T[] values)
+        {
+            return values.Contains(val);
+        }
     }
 }

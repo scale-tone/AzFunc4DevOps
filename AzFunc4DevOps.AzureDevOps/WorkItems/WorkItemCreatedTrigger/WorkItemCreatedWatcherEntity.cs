@@ -36,7 +36,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
 
-            do
+            while (true)
             {
                 // Querying for Ids
                 var query = new Wiql
@@ -80,7 +80,6 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Delay until next attempt
                 await Global.DelayForAboutASecond();
             }
-            while (true);
         }
 
         public void Delete()
@@ -102,6 +101,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 TriggerValue = WorkItemProxy.FromWorkItem(workItem)
             };
 
+            //TODO: handle exceptions
             await executor.TryExecuteAsync(data, CancellationToken.None);
         }
 

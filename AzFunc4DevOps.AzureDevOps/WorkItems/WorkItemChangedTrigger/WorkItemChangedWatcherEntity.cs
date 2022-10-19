@@ -45,7 +45,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             // Storing here the workItems which function invocation failed for. So that they are only retried during next polling session.
             var failedWorkItemIds = new HashSet<int>();
-            do
+            while (true)
             {
                 var newVersions = await this.GetWorkItemIdsAndRevs(workItemClient, $"[System.TeamProject] = '{attribute.ProjectName}'" +
                     (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause));
@@ -89,19 +89,18 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Setting new state
                 this.CurrentWorkItemVersions = itemVersions;
 
+                // Explicitly persisting current state
+                Entity.Current.SetState(this);
+
                 if (DateTimeOffset.UtcNow > watcherParams.WhenToStop) 
                 {
                     // Quitting, if it's time to stop
                     return;
                 }
 
-                // Explicitly persisting current state
-                Entity.Current.SetState(this);
-
                 // Delay until next attempt
                 await Global.DelayForAboutASecond();
             }
-            while (true);
         }
 
         private async Task<Dictionary<int, int>> GetWorkItemIdsAndRevs(WorkItemTrackingHttpClient client, string whereClause)
@@ -214,7 +213,7 @@ namespace AzFunc4DevOps.AzureDevOps
         private readonly VssConnection _connection;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly ILogger _log;
-
+        
 
         // Required boilerplate
         [FunctionName(Global.FunctionPrefix + nameof(WorkItemChangedWatcherEntity))]
