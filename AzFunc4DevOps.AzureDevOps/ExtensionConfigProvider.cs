@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.TeamFoundation.Build.WebApi;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -49,7 +50,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public void Initialize(ExtensionConfigContext context)
         {
-            // Here is where TriggerAttribute and TriggerBinding are welded together
+            // Here is where attributes and bindings are welded together
+
+            // Triggers
 
             context
                 .AddBindingRule<WorkItemCreatedTriggerAttribute>()
@@ -79,6 +82,18 @@ namespace AzFunc4DevOps.AzureDevOps
                 );
 
             context
+                .AddBindingRule<PullRequestStatusChangedTriggerAttribute>()
+                .BindToTrigger(
+                    new GenericTriggerBindingProvider<
+                        PullRequestStatusChangedTriggerAttribute, 
+                        GenericTriggerBinding<PullRequestStatusChangedWatcherEntity, GitPullRequest>
+                    > (this._executorRegistry)
+                );
+
+
+            // Bindings
+
+            context
                 .AddBindingRule<WorkItemClientAttribute>()
                 .BindToInput<WorkItemTrackingHttpClient>((_) => WorkItemClientAttribute.CreateClient(this._vssConnection));
 
@@ -92,6 +107,9 @@ namespace AzFunc4DevOps.AzureDevOps
                 .AddBindingRule<BuildClientAttribute>()
                 .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
 
+            context
+                .AddBindingRule<GitClientAttribute>()
+                .BindToInput<GitHttpClient>((_) => GitClientAttribute.CreateClient(this._vssConnection));
         }
 
         /// <summary>

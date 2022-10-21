@@ -16,7 +16,7 @@ namespace AzFunc4DevOps.AzureDevOps
     {
         #region Entity State
 
-        public Dictionary<int, BuildStatus> CurrentBuildStatuses { get; set; }
+        public Dictionary<int, BuildStatus> CurrentStatuses { get; set; }
 
         #endregion
 
@@ -54,9 +54,11 @@ namespace AzFunc4DevOps.AzureDevOps
                     .Select(s => (BuildReason)Enum.Parse(typeof(BuildReason), s.Trim()))
                     .Aggregate((c, s) => c | s);
 
+            var shouldBeTriggeredOnlyOnce = (!string.IsNullOrWhiteSpace(attribute.FromValue)) || (!string.IsNullOrWhiteSpace(attribute.ToValue));
+
             var buildClient = await this._connection.GetClientAsync<BuildHttpClient>();
 
-            // Storing here the builds which function invocation failed for. So that they are only retried during next polling session.
+            // Storing here the items which function invocation failed for. So that they are only retried during next polling session.
             var failedBuildIds = new HashSet<int>();
             while (true)
             {
@@ -70,10 +72,10 @@ namespace AzFunc4DevOps.AzureDevOps
                     repositoryId: attribute.RepositoryId
                 );
 
-                if (this.CurrentBuildStatuses == null)
+                if (this.CurrentStatuses == null)
                 {
                     // At first run just saving the current snapshot and quitting
-                    this.CurrentBuildStatuses = builds.ToDictionary(b => b.Id, b => b.Status.Value);;
+                    this.CurrentStatuses = builds.ToDictionary(b => b.Id, b => b.Status.Value);;
                     return;
                 }
 
@@ -81,7 +83,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
                 foreach (var build in builds)
                 {
-                    this.CurrentBuildStatuses.TryGetValue(build.Id, out var curStatus);
+                    this.CurrentStatuses.TryGetValue(build.Id, out var curStatus);
                     var newStatus = build.Status ?? BuildStatus.None;
 
                     if (curStatus != BuildStatus.All && newStatus != curStatus && !failedBuildIds.Contains(build.Id))
@@ -94,11 +96,11 @@ namespace AzFunc4DevOps.AzureDevOps
                                 await this.InvokeFunction(build);
 
                                 // Marking that function has already been triggered for this build
-                                curStatus = BuildStatus.All;
+                                curStatus = shouldBeTriggeredOnlyOnce ? BuildStatus.All : newStatus;
                             }
                             else
                             {
-                                // Bumping up the known version
+                                // Just bumping up the known version
                                 curStatus = newStatus;
                             }
                         }
@@ -115,7 +117,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 }
 
                 // Setting new state
-                this.CurrentBuildStatuses = newStatuses;
+                this.CurrentStatuses = newStatuses;
 
                 // Explicitly persisting current state
                 Entity.Current.SetState(this);
