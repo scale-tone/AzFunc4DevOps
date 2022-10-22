@@ -86,7 +86,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 .BindToTrigger(
                     new GenericTriggerBindingProvider<
                         PullRequestStatusChangedTriggerAttribute, 
-                        GenericTriggerBinding<PullRequestStatusChangedWatcherEntity, GitPullRequest>
+                        GenericTriggerBinding<PullRequestStatusChangedWatcherEntity, PullRequestProxy>
                     > (this._executorRegistry)
                 );
 

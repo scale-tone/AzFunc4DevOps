@@ -54,6 +54,9 @@ namespace AzFunc4DevOps.AzureDevOps
                     .Select(s => (BuildReason)Enum.Parse(typeof(BuildReason), s.Trim()))
                     .Aggregate((c, s) => c | s);
 
+            // There's some complicated heuristics below, that detects cases when we 'miss' some particular build state
+            // (when the build runs too quickly).
+            // This flag is to ensure that this heuristics doesn't cause the trigger to fire twice.
             var shouldBeTriggeredOnlyOnce = (!string.IsNullOrWhiteSpace(attribute.FromValue)) || (!string.IsNullOrWhiteSpace(attribute.ToValue));
 
             var buildClient = await this._connection.GetClientAsync<BuildHttpClient>();

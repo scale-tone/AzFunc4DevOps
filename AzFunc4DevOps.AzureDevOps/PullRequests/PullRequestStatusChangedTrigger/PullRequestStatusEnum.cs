@@ -11,10 +11,4 @@ namespace AzFunc4DevOps.AzureDevOps
         Completed = 3,
         Draft = 4
     }
-
-    public struct PullRequestStatusStruct
-    {
-        public PullRequestStatusEnum Status;
-        public bool AlreadyTriggered;
-    }
 }
