@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.TeamFoundation.Build.WebApi;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
@@ -104,12 +105,29 @@ namespace AzFunc4DevOps.AzureDevOps
             );
 
             context
+                .AddBindingRule<ProjectAttribute>()
+                .BindToValueProvider(
+                    (attr, type) => Task.FromResult(new ProjectValueProvider(this._vssConnection, attr) as IValueBinder)
+                );
+
+            context
+                .AddBindingRule<BuildDefinitionAttribute>()
+                .BindToValueProvider(
+                    (attr, type) => Task.FromResult(new BuildDefinitionValueProvider(this._vssConnection, attr) as IValueBinder)
+                );
+
+            context
                 .AddBindingRule<BuildClientAttribute>()
+                // TODO: use async BindToInput() version
                 .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
 
             context
                 .AddBindingRule<GitClientAttribute>()
                 .BindToInput<GitHttpClient>((_) => GitClientAttribute.CreateClient(this._vssConnection));
+
+            context
+                .AddBindingRule<ProjectClientAttribute>()
+                .BindToInput<ProjectHttpClient>((_) => ProjectClientAttribute.CreateClient(this._vssConnection));
         }
 
         /// <summary>
