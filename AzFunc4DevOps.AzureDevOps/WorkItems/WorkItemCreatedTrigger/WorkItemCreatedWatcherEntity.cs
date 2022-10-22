@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
-    public class WorkItemCreatedWatcherEntity : IGenericWatcherEntity<GenericWatcherEntityParams>
+    public class WorkItemCreatedWatcherEntity : IGenericWatcherEntity
     {
         #region Entity State
 
@@ -26,7 +26,7 @@ namespace AzFunc4DevOps.AzureDevOps
             this._executorRegistry = executorRegistry;
         }
 
-        public async Task Watch(GenericWatcherEntityParams watcherParams)
+        public async Task Watch(DateTimeOffset whenToStop)
         {
             var attribute = (WorkItemCreatedTriggerAttribute)this._executorRegistry.TryGetTriggerAttributeForEntity(Entity.Current.EntityId);
             if (attribute == null)
@@ -71,7 +71,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     return;
                 }
 
-                if (DateTimeOffset.UtcNow > watcherParams.WhenToStop) 
+                if (DateTimeOffset.UtcNow > whenToStop) 
                 {
                     // Quitting, if it's time to stop
                     return;

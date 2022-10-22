@@ -1,10 +1,11 @@
+using System;
 using System.Threading.Tasks;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
-    public interface IGenericWatcherEntity<TParams> where TParams : GenericWatcherEntityParams
+    public interface IGenericWatcherEntity
     {
-        Task Watch(TParams parameters);
+        Task Watch(DateTimeOffset whenToStop);
         void Delete();
     }
 }

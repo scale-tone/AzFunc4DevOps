@@ -47,9 +47,9 @@ namespace AzFunc4DevOps.AzureDevOps
             return attributeAndExecutor?.TriggerAttribute;
         }
 
-        public List<EntityId> GetEntityIds()
+        public HashSet<EntityId> GetEntityIds()
         {
-            return this._executorMap.Keys.ToList();
+            return new HashSet<EntityId>(this._executorMap.Keys);
         }
 
         private ConcurrentDictionary<EntityId, AttributeAndExecutor> _executorMap = new ConcurrentDictionary<EntityId, AttributeAndExecutor>();

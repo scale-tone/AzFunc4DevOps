@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
-    public class WorkItemChangedWatcherEntity : IGenericWatcherEntity<GenericWatcherEntityParams>
+    public class WorkItemChangedWatcherEntity : IGenericWatcherEntity
     {
         #region Entity State
 
@@ -33,7 +33,7 @@ namespace AzFunc4DevOps.AzureDevOps
             Entity.Current.DeleteState();
         }
 
-        public async Task Watch(GenericWatcherEntityParams watcherParams)
+        public async Task Watch(DateTimeOffset whenToStop)
         {
             var attribute = (WorkItemChangedTriggerAttribute)this._executorRegistry.TryGetTriggerAttributeForEntity(Entity.Current.EntityId);
             if (attribute == null)
@@ -92,7 +92,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Explicitly persisting current state
                 Entity.Current.SetState(this);
 
-                if (DateTimeOffset.UtcNow > watcherParams.WhenToStop) 
+                if (DateTimeOffset.UtcNow > whenToStop) 
                 {
                     // Quitting, if it's time to stop
                     return;
