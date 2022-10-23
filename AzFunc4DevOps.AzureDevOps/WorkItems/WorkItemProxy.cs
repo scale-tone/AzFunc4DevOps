@@ -389,6 +389,66 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        public double? RemainingWork 
+        {
+            get 
+            {
+                this.Fields.TryGetValue("Microsoft.VSTS.Scheduling.RemainingWork", out var val);
+                return val == null ? null : (double?)val;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    this.Fields.Remove("Microsoft.VSTS.Scheduling.RemainingWork");
+                }
+                else 
+                {
+                    this.Fields["Microsoft.VSTS.Scheduling.RemainingWork"] = value.Value;
+                }
+            }
+        }
+
+        public double? OriginalEstimate 
+        {
+            get 
+            {
+                this.Fields.TryGetValue("Microsoft.VSTS.Scheduling.OriginalEstimate", out var val);
+                return val == null ? null : (double?)val;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    this.Fields.Remove("Microsoft.VSTS.Scheduling.OriginalEstimate");
+                }
+                else 
+                {
+                    this.Fields["Microsoft.VSTS.Scheduling.OriginalEstimate"] = value.Value;
+                }
+            }
+        }
+
+        public double? CompletedWork 
+        {
+            get 
+            {
+                this.Fields.TryGetValue("Microsoft.VSTS.Scheduling.CompletedWork", out var val);
+                return val == null ? null : (double?)val;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    this.Fields.Remove("Microsoft.VSTS.Scheduling.CompletedWork");
+                }
+                else 
+                {
+                    this.Fields["Microsoft.VSTS.Scheduling.CompletedWork"] = value.Value;
+                }
+            }
+        }
+
         #endregion
 
         public JObject OriginalJson { get; private set; }
