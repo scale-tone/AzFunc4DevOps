@@ -10,6 +10,7 @@ using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.WebApi;
 
 [assembly: WebJobsStartup(typeof(AzFunc4DevOps.AzureDevOps.ExtensionConfigProvider))]
@@ -91,6 +92,15 @@ namespace AzFunc4DevOps.AzureDevOps
                     > (this._executorRegistry)
                 );
 
+            context
+                .AddBindingRule<ReleaseCreatedTriggerAttribute>()
+                .BindToTrigger(
+                    new GenericTriggerBindingProvider<
+                        ReleaseCreatedTriggerAttribute, 
+                        GenericTriggerBinding<ReleaseCreatedWatcherEntity, ReleaseProxy>
+                    > (this._executorRegistry)
+                );
+
 
             // Bindings
 
@@ -128,6 +138,10 @@ namespace AzFunc4DevOps.AzureDevOps
             context
                 .AddBindingRule<ProjectClientAttribute>()
                 .BindToInput<ProjectHttpClient>((_) => ProjectClientAttribute.CreateClient(this._vssConnection));
+
+            context
+                .AddBindingRule<ReleaseClientAttribute>()
+                .BindToInput<ReleaseHttpClient>((_) => ReleaseClientAttribute.CreateClient(this._vssConnection));
         }
 
         /// <summary>
