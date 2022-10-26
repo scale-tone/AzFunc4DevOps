@@ -142,6 +142,12 @@ namespace AzFunc4DevOps.AzureDevOps
             context
                 .AddBindingRule<ReleaseClientAttribute>()
                 .BindToInput<ReleaseHttpClient>((_) => ReleaseClientAttribute.CreateClient(this._vssConnection));
+
+            context.AddBindingRule<ReleaseEnvironmentAttribute>()
+                .BindToCollector(attr => new ReleaseEnvironmentCollector(this._vssConnection, attr));
+
+            context.AddBindingRule<ReleaseEnvironmentStatusAttribute>()
+                .BindToCollector(attr => new ReleaseEnvironmentStatusCollector(this._vssConnection, attr));
         }
 
         /// <summary>
