@@ -35,9 +35,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
 
             int? definitionId = null;
-            if (!string.IsNullOrWhiteSpace(attribute.DefinitionId))
+            if (!string.IsNullOrWhiteSpace(attribute.ReleaseDefinitionId))
             {
-                definitionId = int.Parse(attribute.DefinitionId);
+                definitionId = int.Parse(attribute.ReleaseDefinitionId);
             }
 
             var releaseClient = await this._connection.GetClientAsync<ReleaseHttpClient>();
@@ -45,11 +45,12 @@ namespace AzFunc4DevOps.AzureDevOps
             while (true)
             {
                 var releaseIds = (await releaseClient.GetReleasesAsync(
-                    project: attribute.ProjectName,
-                    definitionId: definitionId,
-                    createdBy: attribute.CreatedBy,
-                    path: attribute.ReleaseFolderPath
-                ))
+                        project: attribute.ProjectName,
+                        definitionId: definitionId,
+                        createdBy: attribute.CreatedBy,
+                        path: attribute.ReleaseFolderPath,
+                        expand: ReleaseExpands.None
+                    ))
                     .Select(r => r.Id)
                     .ToList();
 

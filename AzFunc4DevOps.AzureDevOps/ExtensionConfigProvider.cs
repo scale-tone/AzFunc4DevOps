@@ -102,6 +102,15 @@ namespace AzFunc4DevOps.AzureDevOps
                 );
 
 
+            context
+                .AddBindingRule<ReleaseEnvironmentStatusChangedTriggerAttribute>()
+                .BindToTrigger(
+                    new GenericTriggerBindingProvider<
+                        ReleaseEnvironmentStatusChangedTriggerAttribute, 
+                        GenericTriggerBinding<ReleaseEnvironmentStatusChangedWatcherEntity, ReleaseEnvironmentProxy>
+                    > (this._executorRegistry)
+                );
+
             // Bindings
 
             context

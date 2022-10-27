@@ -11,7 +11,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public string ProjectName { get; set; }
 
         [AutoResolve]
-        public string DefinitionId { get; set; }
+        public string ReleaseDefinitionId { get; set; }
 
         [AutoResolve]
         public string CreatedBy { get; set; }

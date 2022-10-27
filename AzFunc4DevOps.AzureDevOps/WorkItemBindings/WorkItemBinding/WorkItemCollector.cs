@@ -17,6 +17,11 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public async Task AddAsync(WorkItemProxy workItem, CancellationToken cancellationToken = default)
         {
+            if (workItem == null)
+            {
+                return;
+            }
+
             var patchDoc = workItem.GetJsonPatchDocument();
 
             if (patchDoc.Count <= 0)
