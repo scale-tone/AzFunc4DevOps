@@ -208,9 +208,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
             var executor = this._executorRegistry.GetExecutorForEntity(Entity.Current.EntityId);
 
-            var data = new TriggeredFunctionData()
+            var data = new TriggeredFunctionData
             {
-                TriggerValue = ReleaseEnvironmentProxy.FromReleaseEnvironment(stage)
+                TriggerValue = ReleaseEnvironmentProxy.FromReleaseEnvironment(stage, client, projectName)
             };
 
             var result = await executor.TryExecuteAsync(data, CancellationToken.None);
