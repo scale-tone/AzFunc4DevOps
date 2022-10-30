@@ -37,7 +37,7 @@ namespace AzFunc4DevOps.AzureDevOps
                         this._helper.LoadActions(stepsXml, links);
                     }
 
-                    this._steps = this._helper.Actions.Select(s => new TestStepProxy((ITestStep)s)).ToList();
+                    this._steps = this._helper.Actions.Select(s => new TestStepProxy(s)).ToList();
                 }
 
                 return this._steps;
@@ -65,21 +65,25 @@ namespace AzFunc4DevOps.AzureDevOps
             int i = 0;
             while (i < this._helper.Actions.Count)
             {
-                if (this._steps.Any(s => s.UnderlyingStep == this._helper.Actions[i]))
+                if (this._steps.Any(s => s.UnderlyingAction == this._helper.Actions[i]))
                 {
                     i++;
                 }
                 else
                 {
-                    var removedUnderlyingStep = (ITestStep)this._helper.Actions[i];
+                    var removedUnderlyingAction = this._helper.Actions[i];
+                    var removedUnderlyingStep = removedUnderlyingAction as ITestStep;
 
-                    // Also need to remove attachments, if any
-                    foreach(var removedAttachment in removedUnderlyingStep.Attachments)
+                    if (removedUnderlyingStep != null)
                     {
-                        this.RemoveRelationsByUrl(doc, removedAttachment.Url, ref isDirty);
+                        // Also need to remove attachments, if any
+                        foreach(var removedAttachment in removedUnderlyingStep.Attachments)
+                        {
+                            this.RemoveRelationsByUrl(doc, removedAttachment.Url, ref isDirty);
+                        }
                     }
 
-                    this._helper.Actions.Remove(removedUnderlyingStep);
+                    this._helper.Actions.Remove(removedUnderlyingAction);
                     isDirty = true;
                 }
             }

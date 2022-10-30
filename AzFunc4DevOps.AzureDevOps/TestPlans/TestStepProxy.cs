@@ -37,19 +37,28 @@ namespace AzFunc4DevOps.AzureDevOps
             this.Attachments = new List<TestAttachmentProxy>();
         }
 
-        internal TestStepProxy(ITestStep step)
+        internal TestStepProxy(ITestAction action)
         {
+            this.UnderlyingAction = action;
+
+            var step = action as ITestStep;
+            if (step == null)
+            {
+                // It might appear to be a _shared_ state. In that case just quitting by now 
+                this.Attachments = new List<TestAttachmentProxy>();
+                return;
+            }
+
             this.Title = step.Title;
             this.ExpectedResult = step.ExpectedResult;
             this.Description = step.Description;
             this.TestStepType = step.TestStepType;
             this.Id = step.Id;
-            this.UnderlyingStep = step;
 
             this.Attachments = step.Attachments.Select(att => new TestAttachmentProxy(att)).ToList();
         }
 
-        internal readonly ITestStep UnderlyingStep;
+        internal readonly ITestAction UnderlyingAction;
 
         internal void SaveChanges(
             TestCaseProxy parent, 
@@ -60,9 +69,10 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             newUnderlyingStep = null;
 
-            var underlyingStep = this.UnderlyingStep;
-            if (underlyingStep == null)
-            {
+            ITestStep underlyingStep;
+
+            if (this.UnderlyingAction == null)
+            {                
                 underlyingStep = parent._helper.CreateTestStep();
                 newUnderlyingStep = underlyingStep;
 
@@ -75,6 +85,13 @@ namespace AzFunc4DevOps.AzureDevOps
             }
             else
             {
+                underlyingStep = this.UnderlyingAction as ITestStep;
+                if (underlyingStep == null)
+                {
+                    // It might appear to be a _shared_ state. In that case just quitting by now 
+                    return;
+                }
+
                 // Should only update underlying values if the property was actually modified.
                 // That's because e.g. underlyingStep.Title now returns some extra unwanted HTML tags around the value.
                 if (underlyingStep.Title != this.Title)
