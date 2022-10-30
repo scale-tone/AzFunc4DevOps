@@ -56,5 +56,17 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             return values.Contains(val);
         }
+
+        public static int FindIndex<T>(this IList<T> list, Func<T, bool> predicate)
+        {
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (predicate(list[i]))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 }

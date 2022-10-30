@@ -11,6 +11,7 @@ using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
+using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
 
 [assembly: WebJobsStartup(typeof(AzFunc4DevOps.AzureDevOps.ExtensionConfigProvider))]
@@ -123,6 +124,12 @@ namespace AzFunc4DevOps.AzureDevOps
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
             );
 
+            var testCaseRule = context.AddBindingRule<TestCaseAttribute>();
+            testCaseRule.BindToCollector(attr => new WorkItemCollector(this._vssConnection, attr));
+            testCaseRule.BindToValueProvider(
+                (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
+            );
+
             context
                 .AddBindingRule<ProjectAttribute>()
                 .BindToValueProvider(
@@ -157,6 +164,10 @@ namespace AzFunc4DevOps.AzureDevOps
 
             context.AddBindingRule<ReleaseEnvironmentStatusAttribute>()
                 .BindToCollector(attr => new ReleaseEnvironmentStatusCollector(this._vssConnection, attr));
+
+            context
+                .AddBindingRule<TestPlanClientAttribute>()
+                .BindToInput<TestPlanHttpClient>((_) => TestPlanClientAttribute.CreateClient(this._vssConnection));
         }
 
         /// <summary>

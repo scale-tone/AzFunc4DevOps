@@ -11,9 +11,11 @@ namespace AzFunc4DevOps.AzureDevOps
         public string ProjectName { get; set; }
 
         [AutoResolve]
-        public string WorkItemId { get; set; }
-        
-        [AutoResolve]
-        public string WorkItemType { get; set; }
+        public string Id { get; set; }
+
+        internal virtual Type GetSpecificWorkItemType()
+        {
+            return typeof(WorkItemProxy);
+        }
     }
 }

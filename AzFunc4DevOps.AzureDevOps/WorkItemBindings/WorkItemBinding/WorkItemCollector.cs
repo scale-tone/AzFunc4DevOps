@@ -12,7 +12,6 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             this._connection = connection;
             this._projectName = attr.ProjectName;
-            this._workItemType = attr.WorkItemType;
         }
 
         public async Task AddAsync(WorkItemProxy workItem, CancellationToken cancellationToken = default)
@@ -42,7 +41,7 @@ namespace AzFunc4DevOps.AzureDevOps
             else
             {
                 // Creating a new workItem
-                await workItemClient.CreateWorkItemAsync(patchDoc, this._projectName, this._workItemType);
+                await workItemClient.CreateWorkItemAsync(patchDoc, this._projectName, workItem.WorkItemType);
             }
         }
 
@@ -53,6 +52,5 @@ namespace AzFunc4DevOps.AzureDevOps
 
         private readonly VssConnection _connection;
         private readonly string _projectName;
-        private readonly string _workItemType;
     }
 }

@@ -451,12 +451,12 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public JObject OriginalJson { get; private set; }
+        public JObject OriginalJson { get; protected set; }
 
-        internal static WorkItemProxy FromWorkItem(WorkItem item)
+        internal static WorkItemProxy FromWorkItem(WorkItem item, Type specificType = null)
         {
             var jObject = JObject.FromObject(item);
-            var proxy = jObject.ToObject<WorkItemProxy>();
+            var proxy = (WorkItemProxy)jObject.ToObject(specificType ?? typeof(WorkItemProxy));
 
             // Preserving the original values, to be able to detect changes later
             proxy.OriginalJson = jObject;
@@ -464,7 +464,7 @@ namespace AzFunc4DevOps.AzureDevOps
             return proxy;
         }
 
-        public JsonPatchDocument GetJsonPatchDocument()
+        public virtual JsonPatchDocument GetJsonPatchDocument()
         {
             var doc = new JsonPatchDocument();
 
