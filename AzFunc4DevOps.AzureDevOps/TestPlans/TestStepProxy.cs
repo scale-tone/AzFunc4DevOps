@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.TeamFoundation.TestManagement.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
-using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 
 namespace AzFunc4DevOps.AzureDevOps
@@ -29,8 +28,9 @@ namespace AzFunc4DevOps.AzureDevOps
         public string Description { get; set; }
         public TestStepType TestStepType { get; set; }
         public int Id { get; private set; }
+        public int? SharedStepId { get; set; }
 
-        public IList<TestAttachmentProxy> Attachments { get; private set; }
+        public ICollection<TestAttachmentProxy> Attachments { get; private set; }
 
         public TestStepProxy()
         {
@@ -41,13 +41,15 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             this.UnderlyingAction = action;
 
-            var step = action as ITestStep;
-            if (step == null)
+            var sharedStep = action as ISharedStep;
+            if (sharedStep != null)
             {
-                // It might appear to be a _shared_ state. In that case just quitting by now 
-                this.Attachments = new List<TestAttachmentProxy>();
+                // It might appear to be a _shared_ state. In that case just setting this property and quitting
+                this.SharedStepId = sharedStep.SharedStepId;
                 return;
             }
+
+            var step = (ITestStep)action;
 
             this.Title = step.Title;
             this.ExpectedResult = step.ExpectedResult;
@@ -64,7 +66,7 @@ namespace AzFunc4DevOps.AzureDevOps
             TestCaseProxy parent, 
             JsonPatchDocument doc, 
             ref bool wasModified, 
-            out ITestStep newUnderlyingStep 
+            out ITestAction newUnderlyingStep 
         )
         {
             newUnderlyingStep = null;
@@ -72,7 +74,18 @@ namespace AzFunc4DevOps.AzureDevOps
             ITestStep underlyingStep;
 
             if (this.UnderlyingAction == null)
-            {                
+            {
+                wasModified = true;
+
+                if (this.SharedStepId.HasValue)
+                {
+                    // Treating this as a shared step
+                    newUnderlyingStep = parent._helper.CreateSharedStepReference();
+                    ((ISharedStep)newUnderlyingStep).SharedStepId = this.SharedStepId.Value;
+
+                    return;
+                }
+
                 underlyingStep = parent._helper.CreateTestStep();
                 newUnderlyingStep = underlyingStep;
 
@@ -80,17 +93,23 @@ namespace AzFunc4DevOps.AzureDevOps
                 underlyingStep.ExpectedResult = this.ExpectedResult;
                 underlyingStep.Description = this.Description;
                 underlyingStep.TestStepType = this.TestStepType;
-
-                wasModified = true;
             }
             else
             {
-                underlyingStep = this.UnderlyingAction as ITestStep;
-                if (underlyingStep == null)
+                var underlyingSharedStep = this.UnderlyingAction as ISharedStep;
+                if (underlyingSharedStep != null)
                 {
-                    // It might appear to be a _shared_ state. In that case just quitting by now 
+                    // Treating this as a shared step
+                    if (underlyingSharedStep.SharedStepId != this.SharedStepId)
+                    {
+                        underlyingSharedStep.SharedStepId = this.SharedStepId.Value;
+                        wasModified = true;
+                    }
+
                     return;
                 }
+
+                underlyingStep = (ITestStep)this.UnderlyingAction;
 
                 // Should only update underlying values if the property was actually modified.
                 // That's because e.g. underlyingStep.Title now returns some extra unwanted HTML tags around the value.
