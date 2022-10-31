@@ -168,6 +168,12 @@ namespace AzFunc4DevOps.AzureDevOps
             context
                 .AddBindingRule<TestPlanClientAttribute>()
                 .BindToInput<TestPlanHttpClient>((_) => TestPlanClientAttribute.CreateClient(this._vssConnection));
+
+            context
+                .AddBindingRule<TestSuiteAttribute>()
+                .BindToValueProvider(
+                    (attr, type) => Task.FromResult(new TestSuiteValueProvider(this._vssConnection, attr) as IValueBinder)
+                );
         }
 
         /// <summary>
