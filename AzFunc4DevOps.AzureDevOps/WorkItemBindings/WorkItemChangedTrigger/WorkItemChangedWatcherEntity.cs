@@ -47,7 +47,7 @@ namespace AzFunc4DevOps.AzureDevOps
             var failedWorkItemIds = new HashSet<int>();
             while (true)
             {
-                string whereClause = $"[System.TeamProject] = '{attribute.ProjectName}'" +
+                string whereClause = $"[System.TeamProject] = '{attribute.Project}'" +
                     (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause);
 
                 var newVersions = await this.GetWorkItemIdsAndRevs(workItemClient, whereClause);
@@ -154,8 +154,8 @@ namespace AzFunc4DevOps.AzureDevOps
 
         private async Task InvokeFunctionForWorkItemsIfChanged(WorkItemTrackingHttpClient client, WorkItemChangedTriggerAttribute attr, int workItemId, int oldVersion, int newVersion)
         {
-            var oldItem = await client.GetRevisionAsync(attr.ProjectName, workItemId, oldVersion, WorkItemExpand.All);
-            var newItem = await client.GetRevisionAsync(attr.ProjectName, workItemId, newVersion, WorkItemExpand.All);
+            var oldItem = await client.GetRevisionAsync(attr.Project, workItemId, oldVersion, WorkItemExpand.All);
+            var newItem = await client.GetRevisionAsync(attr.Project, workItemId, newVersion, WorkItemExpand.All);
 
             bool hasChanged = false;
 
@@ -189,7 +189,7 @@ namespace AzFunc4DevOps.AzureDevOps
             if (hasChanged) 
             {
                 // Passing the most recent version intentionally, so that it can then be modified and saved by the client code.
-                var latestItem = await client.GetWorkItemAsync(attr.ProjectName, newItem.Id.Value, null, null, WorkItemExpand.All);
+                var latestItem = await client.GetWorkItemAsync(attr.Project, newItem.Id.Value, null, null, WorkItemExpand.All);
 
                 await this.InvokeFunction(oldItem, latestItem);
             }

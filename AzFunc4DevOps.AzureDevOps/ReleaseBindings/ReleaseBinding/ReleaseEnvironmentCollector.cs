@@ -14,7 +14,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public ReleaseEnvironmentCollector(VssConnection connection, ReleaseEnvironmentAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
         }
 
         public async Task AddAsync(ReleaseEnvironmentProxy releaseStage, CancellationToken cancellationToken = default)
@@ -27,7 +27,7 @@ namespace AzFunc4DevOps.AzureDevOps
             var client = await this._connection.GetClientAsync<ReleaseHttpClient>();
 
             // First need to update the whole release object, because it's the only way to modify e.g. variable values
-            var release = await client.GetReleaseAsync(this._projectName, releaseStage.ReleaseId);
+            var release = await client.GetReleaseAsync(this._project, releaseStage.ReleaseId);
 
             var oldReleaseStage = release.Environments.SingleOrDefault(e => e.Id == releaseStage.Id);
             if (oldReleaseStage == null)
@@ -37,7 +37,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             release.Environments[release.Environments.IndexOf(oldReleaseStage)] = releaseStage;
 
-            await client.UpdateReleaseAsync(release, this._projectName, release.Id);
+            await client.UpdateReleaseAsync(release, this._project, release.Id);
 
             // Now applying the stage status, if it was changed by the client code
             if (oldReleaseStage.Status != releaseStage.Status)
@@ -47,7 +47,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     Status = releaseStage.Status
                 };
 
-                await client.UpdateReleaseEnvironmentAsync(data, this._projectName, releaseStage.ReleaseId, releaseStage.Id);
+                await client.UpdateReleaseEnvironmentAsync(data, this._project, releaseStage.ReleaseId, releaseStage.Id);
             }
         }
 
@@ -57,6 +57,6 @@ namespace AzFunc4DevOps.AzureDevOps
         }
 
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
     }
 }

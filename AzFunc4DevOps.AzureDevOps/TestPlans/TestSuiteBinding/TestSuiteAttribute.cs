@@ -5,11 +5,8 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-    public class TestSuiteAttribute : Attribute
+    public class TestSuiteAttribute : GenericProjectBindingAttribute
     {
-        [AutoResolve]
-        public string ProjectName { get; set; }
-
         [AutoResolve]
         public string PlanId { get; set; }
 

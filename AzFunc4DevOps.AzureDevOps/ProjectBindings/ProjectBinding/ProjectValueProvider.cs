@@ -12,7 +12,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public ProjectValueProvider(VssConnection connection, ProjectAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
         }
 
         public Type Type => typeof(ProjectProxy);
@@ -21,7 +21,7 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             var projectClient = await this._connection.GetClientAsync<ProjectHttpClient>();
 
-            var project = await projectClient.GetProject(this._projectName);
+            var project = await projectClient.GetProject(this._project);
 
             var proxy = ProjectProxy.FromTeamProject(project);
 
@@ -35,10 +35,10 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public string ToInvokeString()
         {
-            return $"{this._projectName}";
+            return $"{this._project}";
         }
         
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
     }
 }

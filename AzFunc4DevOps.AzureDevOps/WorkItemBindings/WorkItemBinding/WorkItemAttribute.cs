@@ -5,11 +5,8 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-    public class WorkItemAttribute : Attribute
+    public class WorkItemAttribute : GenericProjectBindingAttribute
     {
-        [AutoResolve]
-        public string ProjectName { get; set; }
-
         [AutoResolve]
         public string Id { get; set; }
 

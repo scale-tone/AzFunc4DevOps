@@ -5,9 +5,7 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class ProjectAttribute : Attribute
+    public class ProjectAttribute : GenericProjectBindingAttribute
     {
-        [AutoResolve]
-        public string ProjectName { get; set; }
     }
 }

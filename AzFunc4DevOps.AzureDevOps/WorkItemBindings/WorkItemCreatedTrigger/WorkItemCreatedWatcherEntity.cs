@@ -41,7 +41,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Querying for Ids
                 var query = new Wiql
                 {
-                    Query = $"SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '{attribute.ProjectName}'" +
+                    Query = $"SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '{attribute.Project}'" +
                         (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause)
                 };
 
@@ -61,7 +61,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 if (addedItems.Any())
                 {
                     // Triggering functions
-                    var invokeTasks = addedItems.Select(id => this.InvokeFunction(workItemClient, attribute.ProjectName, id)).ToList();
+                    var invokeTasks = addedItems.Select(id => this.InvokeFunction(workItemClient, attribute.Project, id)).ToList();
                     await Task.WhenAll(invokeTasks);
 
                     // Persisting new list of ids in state

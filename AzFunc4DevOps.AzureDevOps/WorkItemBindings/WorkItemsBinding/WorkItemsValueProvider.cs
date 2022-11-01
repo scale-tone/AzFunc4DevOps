@@ -26,7 +26,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             var query = new Wiql
             {
-                Query = $"SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '{this._attribute.ProjectName}'" +
+                Query = $"SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '{this._attribute.Project}'" +
                     (string.IsNullOrEmpty(this._attribute.WiqlQueryWhereClause) ? "" : " AND " + this._attribute.WiqlQueryWhereClause)
             };
 
@@ -42,7 +42,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public string ToInvokeString()
         {
-            return $"{this._attribute.ProjectName}-{this._attribute.WiqlQueryWhereClause}";
+            return $"{this._attribute.Project}-{this._attribute.WiqlQueryWhereClause}";
         }
         
         private readonly VssConnection _connection;

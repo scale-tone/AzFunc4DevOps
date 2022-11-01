@@ -13,7 +13,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public TestSuiteValueProvider(VssConnection connection, TestSuiteAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
             this._planId = int.Parse(attr.PlanId);
             this._id = string.IsNullOrWhiteSpace(attr.Id) ? (int?)null : int.Parse(attr.Id);
         }
@@ -28,14 +28,14 @@ namespace AzFunc4DevOps.AzureDevOps
             {
                 // Fetching plan's root suite id
                 // TODO: optimize so that this step is only executed once (now it happens at every function call)
-                var plan = await client.GetTestPlanByIdAsync(this._projectName, this._planId);
+                var plan = await client.GetTestPlanByIdAsync(this._project, this._planId);
                 this._id = plan.RootSuite.Id;
             }
 
-            var item = await client.GetTestSuiteByIdAsync(this._projectName, this._planId, this._id.Value);
+            var item = await client.GetTestSuiteByIdAsync(this._project, this._planId, this._id.Value);
 
             // TODO: check if there can be multiple pages returned by this method
-            var cases = await client.GetTestCaseListAsync(this._projectName, this._planId, this._id.Value);
+            var cases = await client.GetTestCaseListAsync(this._project, this._planId, this._id.Value);
 
             var proxy = TestSuiteProxy.FromTestSuite(item, cases.Select(c => new TestCaseId {
 
@@ -54,12 +54,12 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public string ToInvokeString()
         {
-            return $"{this._projectName}-{this._planId}-{this._id}";
+            return $"{this._project}-{this._planId}-{this._id}";
         }
         
 
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
         private readonly int _planId;
         private int? _id;
     }

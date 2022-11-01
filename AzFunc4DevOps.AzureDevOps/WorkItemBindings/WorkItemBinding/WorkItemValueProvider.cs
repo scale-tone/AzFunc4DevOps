@@ -13,7 +13,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public WorkItemValueProvider(VssConnection connection, WorkItemAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
             this._id = int.Parse(attr.Id);
             this.Type = attr.GetSpecificWorkItemType();
         }
@@ -24,7 +24,7 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
 
-            var workItem = await workItemClient.GetWorkItemAsync(this._projectName, this._id, expand: WorkItemExpand.All);
+            var workItem = await workItemClient.GetWorkItemAsync(this._project, this._id, expand: WorkItemExpand.All);
 
             var proxy = WorkItemProxy.FromWorkItem(workItem, this.Type);
 
@@ -38,11 +38,11 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public string ToInvokeString()
         {
-            return $"{this._projectName}-{this._id}";
+            return $"{this._project}-{this._id}";
         }
         
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
         private readonly int _id;
     }
 }

@@ -55,7 +55,7 @@ namespace AzFunc4DevOps.AzureDevOps
             while (true)
             {
                 var stages = (await releaseClient.GetReleasesAsync(
-                        project: attribute.ProjectName,
+                        project: attribute.Project,
                         definitionId: definitionId,
                         createdBy: attribute.CreatedBy,
                         path: attribute.ReleaseFolderPath,
@@ -128,7 +128,7 @@ namespace AzFunc4DevOps.AzureDevOps
                             try
                             {
                                 // Intentionally using await, to distribute the load against Azure DevOps
-                                await this.InvokeFunction(releaseClient, attribute.ProjectName, stage.Ids.Item1, stage.Ids.Item2);
+                                await this.InvokeFunction(releaseClient, attribute.Project, stage.Ids.Item1, stage.Ids.Item2);
 
                                 // Bumping up the known version and marking that function has already been triggered for this stage
                                 curStatus = shouldBeTriggeredOnlyOnce ? (stage.Status | AlreadyTriggeredFlag) : stage.Status;

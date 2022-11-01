@@ -66,7 +66,7 @@ namespace AzFunc4DevOps.AzureDevOps
             while (true)
             {
                 var builds = await buildClient.GetBuildsAsync(
-                    project: attribute.ProjectName,
+                    project: attribute.Project,
                     definitions: buildDefinitionIds,
                     queues: agentPoolIds,
                     buildNumber: attribute.BuildNumber,

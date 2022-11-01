@@ -17,7 +17,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public TestSuiteCollector(VssConnection connection, TestSuiteAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
         }
 
         public async Task AddAsync(TestSuiteProxy suite, CancellationToken cancellationToken = default)
@@ -43,7 +43,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Dropping all previously existed test cases
                 string ids = string.Join(",", suite.OriginalTestCases.Select(tc => tc.Id));
 
-                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._projectName}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{ids}?api-version=5.0";
+                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{ids}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Delete, uri))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicCredentials);
@@ -59,7 +59,7 @@ namespace AzFunc4DevOps.AzureDevOps
             // Adding test cases anew. Can't do it via a single call, because in that case the order will be lost (looks like the server always first _sorts_ ids to be added)
             foreach (var testCase in suite.TestCases)
             {
-                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._projectName}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{testCase.Id}?api-version=5.0";
+                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{testCase.Id}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicCredentials);
@@ -104,6 +104,6 @@ namespace AzFunc4DevOps.AzureDevOps
 
         private static HttpClient HttpClient = new HttpClient();
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
     }
 }

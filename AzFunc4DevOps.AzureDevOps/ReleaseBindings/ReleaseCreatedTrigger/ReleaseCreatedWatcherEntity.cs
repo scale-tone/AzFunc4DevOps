@@ -45,7 +45,7 @@ namespace AzFunc4DevOps.AzureDevOps
             while (true)
             {
                 var releaseIds = (await releaseClient.GetReleasesAsync(
-                        project: attribute.ProjectName,
+                        project: attribute.Project,
                         definitionId: definitionId,
                         createdBy: attribute.CreatedBy,
                         path: attribute.ReleaseFolderPath,
@@ -67,7 +67,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 if (addedReleaseIds.Any())
                 {
                     // Triggering functions
-                    var invokeTasks = addedReleaseIds.Select(id => this.InvokeFunction(releaseClient, attribute.ProjectName, id)).ToList();
+                    var invokeTasks = addedReleaseIds.Select(id => this.InvokeFunction(releaseClient, attribute.Project, id)).ToList();
                     await Task.WhenAll(invokeTasks);
 
                     // Persisting new list of ids in state

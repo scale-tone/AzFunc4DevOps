@@ -5,9 +5,7 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-    public class ReleaseEnvironmentAttribute : Attribute
+    public class ReleaseEnvironmentAttribute : GenericProjectBindingAttribute
     {
-        [AutoResolve]
-        public string ProjectName { get; set; }
     }
 }

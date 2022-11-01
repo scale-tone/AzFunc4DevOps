@@ -12,7 +12,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public WorkItemCollector(VssConnection connection, WorkItemAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
         }
 
         public async Task AddAsync(WorkItemProxy workItem, CancellationToken cancellationToken = default)
@@ -38,7 +38,7 @@ namespace AzFunc4DevOps.AzureDevOps
             else
             {
                 // Creating a new workItem
-                var createdItem = await workItemClient.CreateWorkItemAsync(patchDoc, this._projectName, workItem.WorkItemType);
+                var createdItem = await workItemClient.CreateWorkItemAsync(patchDoc, this._project, workItem.WorkItemType);
 
                 workItem.Id = createdItem.Id;
             }
@@ -50,6 +50,6 @@ namespace AzFunc4DevOps.AzureDevOps
         }
 
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
     }
 }

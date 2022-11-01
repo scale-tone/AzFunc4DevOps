@@ -12,7 +12,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public BuildDefinitionValueProvider(VssConnection connection, BuildDefinitionAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
             this._buildDefinitionId = int.Parse(attr.Id);
         }
 
@@ -22,7 +22,7 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             var client = await this._connection.GetClientAsync<BuildHttpClient>();
 
-            var definiton = await client.GetDefinitionAsync(this._projectName, this._buildDefinitionId);
+            var definiton = await client.GetDefinitionAsync(this._project, this._buildDefinitionId);
 
             var proxy = BuildDefinitionProxy.FromDefinition(definiton);
 
@@ -36,11 +36,11 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public string ToInvokeString()
         {
-            return $"{this._projectName}-{this._buildDefinitionId}";
+            return $"{this._project}-{this._buildDefinitionId}";
         }
         
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
         private readonly int _buildDefinitionId;
     }
 }

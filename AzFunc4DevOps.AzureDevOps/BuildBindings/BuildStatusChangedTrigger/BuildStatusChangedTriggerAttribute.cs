@@ -12,9 +12,6 @@ namespace AzFunc4DevOps.AzureDevOps
     public class BuildStatusChangedTriggerAttribute : GenericTriggerAttribute
     {
         [AutoResolve]
-        public string ProjectName { get; set; }
-
-        [AutoResolve]
         public string BuildDefinitionIds { get; set; }
 
         [AutoResolve]

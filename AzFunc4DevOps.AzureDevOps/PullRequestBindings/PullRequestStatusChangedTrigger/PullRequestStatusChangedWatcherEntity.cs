@@ -48,7 +48,7 @@ namespace AzFunc4DevOps.AzureDevOps
             var failedIds = new HashSet<int>();
             while (true)
             {
-                var pullRequests = (await client.GetPullRequestsByProjectAsync(attribute.ProjectName, searchCriteria))
+                var pullRequests = (await client.GetPullRequestsByProjectAsync(attribute.Project, searchCriteria))
                     .Where(pr => string.IsNullOrWhiteSpace(attribute.Repository) ? 
                         true : 
                         pr.Repository.Name == attribute.Repository)
