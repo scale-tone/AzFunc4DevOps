@@ -89,8 +89,8 @@ namespace AzFunc4DevOps.AzureDevOps
                 underlyingStep = parent._helper.CreateTestStep();
                 newUnderlyingStep = underlyingStep;
 
-                underlyingStep.Title = this.Title;
-                underlyingStep.ExpectedResult = this.ExpectedResult;
+                underlyingStep.Title = this.Title ?? string.Empty;
+                underlyingStep.ExpectedResult = this.ExpectedResult ?? string.Empty;
                 underlyingStep.Description = this.Description;
                 underlyingStep.TestStepType = this.TestStepType;
             }

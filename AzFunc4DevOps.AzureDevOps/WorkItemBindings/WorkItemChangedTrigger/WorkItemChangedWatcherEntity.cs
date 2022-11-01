@@ -47,8 +47,10 @@ namespace AzFunc4DevOps.AzureDevOps
             var failedWorkItemIds = new HashSet<int>();
             while (true)
             {
-                var newVersions = await this.GetWorkItemIdsAndRevs(workItemClient, $"[System.TeamProject] = '{attribute.ProjectName}'" +
-                    (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause));
+                string whereClause = $"[System.TeamProject] = '{attribute.ProjectName}'" +
+                    (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause);
+
+                var newVersions = await this.GetWorkItemIdsAndRevs(workItemClient, whereClause);
 
                 if (this.CurrentWorkItemVersions == null)
                 {

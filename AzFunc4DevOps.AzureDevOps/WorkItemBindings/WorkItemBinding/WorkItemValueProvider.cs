@@ -28,26 +28,12 @@ namespace AzFunc4DevOps.AzureDevOps
 
             var proxy = WorkItemProxy.FromWorkItem(workItem, this.Type);
 
-            proxy.CreatedByValueProvider = true;
-
             return proxy;
         }
 
-        public async Task SetValueAsync(object value, CancellationToken cancellationToken)
+        public Task SetValueAsync(object value, CancellationToken cancellationToken)
         {
-            var workItem = (WorkItemProxy)value;
-
-            var patchDoc = workItem.GetJsonPatchDocument();
-
-            if (patchDoc.Count <= 0)
-            {
-                // If wasn't changed, doing nothing
-                return;
-            }
-
-            var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
-
-            await workItemClient.UpdateWorkItemAsync(patchDoc, workItem.Id.Value);
+            return Task.CompletedTask;
         }
 
         public string ToInvokeString()

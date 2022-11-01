@@ -522,8 +522,6 @@ namespace AzFunc4DevOps.AzureDevOps
             return doc;
         }
 
-        internal bool CreatedByValueProvider;
-
         private bool AreDifferent(object oldValue, object newValue)
         {
             if (oldValue == null && newValue == null)

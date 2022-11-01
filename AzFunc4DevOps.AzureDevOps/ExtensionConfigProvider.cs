@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
+using Microsoft.TeamFoundation.Work.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
@@ -124,10 +125,22 @@ namespace AzFunc4DevOps.AzureDevOps
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
             );
 
+            context
+                .AddBindingRule<WorkItemsAttribute>()
+                .BindToValueProvider(
+                    (attr, type) => Task.FromResult(new WorkItemsValueProvider(this._vssConnection, attr) as IValueBinder)
+                );
+
             var testCaseRule = context.AddBindingRule<TestCaseAttribute>();
             testCaseRule.BindToCollector(attr => new WorkItemCollector(this._vssConnection, attr));
             testCaseRule.BindToValueProvider(
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
+            );
+
+            var testSuiteRule = context.AddBindingRule<TestSuiteAttribute>();
+            testSuiteRule.BindToCollector(attr => new TestSuiteCollector(this._vssConnection, attr));
+            testSuiteRule.BindToValueProvider(
+                (attr, type) => Task.FromResult(new TestSuiteValueProvider(this._vssConnection, attr) as IValueBinder)
             );
 
             context
@@ -170,10 +183,8 @@ namespace AzFunc4DevOps.AzureDevOps
                 .BindToInput<TestPlanHttpClient>((_) => TestPlanClientAttribute.CreateClient(this._vssConnection));
 
             context
-                .AddBindingRule<TestSuiteAttribute>()
-                .BindToValueProvider(
-                    (attr, type) => Task.FromResult(new TestSuiteValueProvider(this._vssConnection, attr) as IValueBinder)
-                );
+                .AddBindingRule<WorkClientAttribute>()
+                .BindToInput<WorkHttpClient>((_) => WorkClientAttribute.CreateClient(this._vssConnection));
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -32,16 +33,14 @@ namespace AzFunc4DevOps.AzureDevOps
 
             if (workItem.Id.HasValue)
             {
-                // Updating existing workItem, but only if it doesn't come from input binding (to prevent double updates)
-                if (!workItem.CreatedByValueProvider)
-                {
-                    await workItemClient.UpdateWorkItemAsync(patchDoc, workItem.Id.Value);
-                }
+                await workItemClient.UpdateWorkItemAsync(patchDoc, workItem.Id.Value);
             }
             else
             {
                 // Creating a new workItem
-                await workItemClient.CreateWorkItemAsync(patchDoc, this._projectName, workItem.WorkItemType);
+                var createdItem = await workItemClient.CreateWorkItemAsync(patchDoc, this._projectName, workItem.WorkItemType);
+
+                workItem.Id = createdItem.Id;
             }
         }
 
