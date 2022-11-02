@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
@@ -24,6 +26,7 @@ namespace AzFunc4DevOps.AzureDevOps
     /// First instance of this class is created by the runtime.
     /// Then that instance creates another instance, which then does IExtensionConfigProvider stuff.
     /// </summary>
+    [Extension("AzFunc4DevOps")]
     public class ExtensionConfigProvider : IExtensionConfigProvider, IWebJobsStartup
     {
         public void Configure(IWebJobsBuilder builder)
@@ -45,11 +48,24 @@ namespace AzFunc4DevOps.AzureDevOps
             builder.Services.AddSingleton(executorRegistry);
 
             // Adding bindings
-            builder.AddExtension(new ExtensionConfigProvider 
-            { 
-                _vssConnection = vssConnection,
-                _executorRegistry = executorRegistry
-            });
+            builder.AddExtension<ExtensionConfigProvider>();
+        }
+
+        /// <summary>
+        /// Used by IWebJobsStartup
+        /// </summary>
+        public ExtensionConfigProvider()
+        {
+        }
+
+        /// <summary>
+        /// Used by IExtensionConfigProvider
+        /// </summary>
+        public ExtensionConfigProvider(VssConnection vssConnection, TriggerExecutorRegistry executorRegistry, INameResolver nameResolver)
+        {
+            this._vssConnection = vssConnection;
+            this._executorRegistry = executorRegistry;
+            this._nameResolver = nameResolver;
         }
 
         public void Initialize(ExtensionConfigContext context)
@@ -64,7 +80,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         WorkItemCreatedTriggerAttribute, 
                         GenericTriggerBinding<WorkItemCreatedWatcherEntity, WorkItemProxy>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
             context
@@ -73,7 +89,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         WorkItemChangedTriggerAttribute, 
                         GenericTriggerBinding<WorkItemChangedWatcherEntity, WorkItemChange>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
             context
@@ -82,7 +98,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         BuildStatusChangedTriggerAttribute, 
                         GenericTriggerBinding<BuildStatusChangedWatcherEntity, BuildProxy>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
             context
@@ -91,7 +107,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         PullRequestStatusChangedTriggerAttribute, 
                         GenericTriggerBinding<PullRequestStatusChangedWatcherEntity, PullRequestProxy>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
             context
@@ -100,7 +116,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         ReleaseCreatedTriggerAttribute, 
                         GenericTriggerBinding<ReleaseCreatedWatcherEntity, ReleaseProxy>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
 
@@ -110,7 +126,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     new GenericTriggerBindingProvider<
                         ReleaseEnvironmentStatusChangedTriggerAttribute, 
                         GenericTriggerBinding<ReleaseEnvironmentStatusChangedWatcherEntity, ReleaseEnvironmentProxy>
-                    > (this._executorRegistry)
+                    > (this._executorRegistry, this._nameResolver)
                 );
 
             // Bindings
@@ -187,14 +203,8 @@ namespace AzFunc4DevOps.AzureDevOps
                 .BindToInput<WorkHttpClient>((_) => WorkClientAttribute.CreateClient(this._vssConnection));
         }
 
-        /// <summary>
-        /// Just to pass the VssConnection instance from Configure() to Initialize()
-        /// </summary>
-        private VssConnection _vssConnection;
-
-        /// <summary>
-        /// Just to pass the TriggerExecutorRegistry instance from Configure() to Initialize()
-        /// </summary>
-        private TriggerExecutorRegistry _executorRegistry;
+        private readonly VssConnection _vssConnection;
+        private readonly TriggerExecutorRegistry _executorRegistry;
+        private readonly INameResolver _nameResolver;
     }
 }
