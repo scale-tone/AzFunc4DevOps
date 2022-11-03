@@ -4,6 +4,10 @@ using Newtonsoft.Json.Linq;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Represents a BuildDefinition instance.
+    /// <seealso href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.teamfoundation.build.webapi.builddefinition"/>
+    /// </summary>
     [JsonConverter(typeof(DummyJsonConverter))]
     public class BuildDefinitionProxy : BuildDefinition
     {

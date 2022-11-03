@@ -7,7 +7,8 @@ namespace AzFunc4DevOps.AzureDevOps
     public abstract class GenericProjectBindingAttribute : Attribute
     {
         /// <summary>
-        /// Team Project's name
+        /// Team Project's name. 
+        /// Required.
         /// </summary>
         [AutoResolve]
         public string Project { get; set; }

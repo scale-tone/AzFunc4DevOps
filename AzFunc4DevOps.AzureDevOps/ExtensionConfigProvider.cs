@@ -26,7 +26,6 @@ namespace AzFunc4DevOps.AzureDevOps
     /// First instance of this class is created by the runtime.
     /// Then that instance creates another instance, which then does IExtensionConfigProvider stuff.
     /// </summary>
-    [Extension("AzFunc4DevOps")]
     public class ExtensionConfigProvider : IExtensionConfigProvider, IWebJobsStartup
     {
         public void Configure(IWebJobsBuilder builder)

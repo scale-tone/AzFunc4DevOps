@@ -41,7 +41,9 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Querying for Ids
                 var query = new Wiql
                 {
-                    Query = $"SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '{attribute.Project}'" +
+                    Query = $"SELECT [System.Id] FROM workitems WHERE " + 
+                        $"[System.CreatedDate] > @StartOfDay('-{ObservationPeriodInDays}d') AND " +
+                        $"[System.TeamProject] = '{attribute.Project}'" +
                         (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause)
                 };
 
@@ -86,6 +88,9 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             Entity.Current.DeleteState();
         }
+
+        // TODO: Turn into a setting
+        private const int ObservationPeriodInDays = 15;
 
         private readonly VssConnection _connection;
         private readonly TriggerExecutorRegistry _executorRegistry;

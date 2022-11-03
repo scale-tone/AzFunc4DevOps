@@ -8,10 +8,14 @@ using Newtonsoft.Json.Linq;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Represents the <see cref="ReleaseEnvironment"/> (aka Release Stage) object
+    /// </summary>
     public class ReleaseEnvironmentProxy : ReleaseEnvironment
     {
-        public JObject OriginalJson { get; private set; }
-
+        /// <summary>
+        /// Reference to parent Release
+        /// </summary>
         public ReleaseProxy ReleaseProxy
         { 
             get 
@@ -27,6 +31,10 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// References to all other Environments (Stages) of this Release.
+        /// Navigate to them by their name.
+        /// </summary>
         public IDictionary<string, ReleaseEnvironmentProxy> AllEnvironments
         {
             get
@@ -43,6 +51,12 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Result Values of this Release Environment (Stage).
+        /// To output a result value, create a shell (bash, cmd, etc.) task, that has "AzFunc4DevOps" in its name
+        /// and prints "&lt;AzFunc4DevOps.MyResult&gt;my-value&lt;/AzFunc4DevOps.MyResult&gt;" to stdout.
+        /// Then "MyResult"="my-value" will appear in this map.
+        /// </summary>
         public IDictionary<string, string> ResultValues
         {
             get
@@ -56,7 +70,7 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
-        private static readonly string TaskMarker = "AzFunc4DevOps";
+        private static readonly string TaskMarker = Global.FunctionPrefix;
 
         // TODO: add backreference
         public static readonly Regex ResultValueRegex = new Regex($"<AzFunc4DevOps\\.([\\w-]+)>(.*)</AzFunc4DevOps\\.([\\w-]+)>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -71,9 +85,6 @@ namespace AzFunc4DevOps.AzureDevOps
         {
             var jObject = JObject.FromObject(item);
             var proxy = jObject.ToObject<ReleaseEnvironmentProxy>();
-
-            // Preserving the original values, to be able to detect changes later
-            proxy.OriginalJson = jObject;
 
             // Keeping this reference, in case client code wants to navigate to full release
             proxy._client = client;

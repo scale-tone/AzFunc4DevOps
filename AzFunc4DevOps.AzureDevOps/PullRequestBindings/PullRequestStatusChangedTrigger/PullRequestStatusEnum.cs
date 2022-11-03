@@ -1,8 +1,9 @@
 
-using Microsoft.TeamFoundation.SourceControl.WebApi;
-
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Possible Pull Request statuses.
+    /// </summary>
     public enum PullRequestStatusEnum
     {
         NotSet = 0,

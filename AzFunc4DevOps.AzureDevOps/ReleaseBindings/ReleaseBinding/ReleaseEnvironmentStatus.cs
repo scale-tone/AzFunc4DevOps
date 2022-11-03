@@ -7,7 +7,14 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class ReleaseEnvironmentStatus : ReleaseEnvironmentUpdateMetadata
     {
+        /// <summary>
+        /// ID of the Release this Environment (Stage) belongs to.
+        /// </summary>
         public int ReleaseId { get; private set; }
+
+        /// <summary>
+        /// ID of this Release Environment (Stage)
+        /// </summary>
         public int ReleaseEnvironmentId { get; private set; }
 
         public ReleaseEnvironmentStatus(int releaseId, int releaseEnvironmentId)

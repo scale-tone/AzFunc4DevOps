@@ -47,7 +47,8 @@ namespace AzFunc4DevOps.AzureDevOps
             var failedWorkItemIds = new HashSet<int>();
             while (true)
             {
-                string whereClause = $"[System.TeamProject] = '{attribute.Project}'" +
+                string whereClause = $"[System.CreatedDate] > @StartOfDay('-{ObservationPeriodInDays}d') AND " + 
+                    $"[System.TeamProject] = '{attribute.Project}'" +
                     (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause);
 
                 var newVersions = await this.GetWorkItemIdsAndRevs(workItemClient, whereClause);
@@ -211,6 +212,9 @@ namespace AzFunc4DevOps.AzureDevOps
                 throw result.Exception;
             }
         }
+
+        // TODO: Turn into a setting
+        private const int ObservationPeriodInDays = 90;
 
         private readonly VssConnection _connection;
         private readonly TriggerExecutorRegistry _executorRegistry;

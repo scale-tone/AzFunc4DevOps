@@ -3,6 +3,10 @@ using Newtonsoft.Json.Linq;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Represents the TeamProject object.
+    /// <seealso href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.teamfoundation.core.webapi.teamproject"/>
+    /// </summary>
     public class ProjectProxy : TeamProject
     {
         internal static ProjectProxy FromTeamProject(TeamProject item)

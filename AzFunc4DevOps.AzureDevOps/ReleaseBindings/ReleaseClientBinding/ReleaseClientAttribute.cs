@@ -5,6 +5,9 @@ using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
+    /// <summary>
+    /// Injects ReleaseHttpClient instance into your Function. 
+    /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
     public class ReleaseClientAttribute : Attribute

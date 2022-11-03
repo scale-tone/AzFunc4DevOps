@@ -7,10 +7,16 @@ using Newtonsoft.Json.Linq;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
+    /// <summary>
+    /// Represents a generic Work Item.
+    /// </summary>
     public class WorkItemProxy : WorkItem 
     {
         #region Field Definitions
 
+        /// <summary>
+        /// System.AreaId field.
+        /// </summary>
         public long? AreaId 
         {
             get 
@@ -31,6 +37,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.AreaPath field.
+        /// </summary>
         public string AreaPath
         {
             get 
@@ -51,6 +60,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.TeamProject field.
+        /// </summary>
         public string TeamProject
         {
             get 
@@ -71,6 +83,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.AuthorizedDate field.
+        /// </summary>
         public DateTime? AuthorizedDate
         {
             get 
@@ -91,6 +106,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.RevisedDate field.
+        /// </summary>
         public DateTime? RevisedDate
         {
             get 
@@ -111,6 +129,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.IterationId field.
+        /// </summary>
         public long? IterationId 
         {
             get 
@@ -131,6 +152,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.IterationPath field.
+        /// </summary>
         public string IterationPath 
         {
             get 
@@ -151,6 +175,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.WorkItemType field.
+        /// </summary>
         public string WorkItemType 
         {
             get 
@@ -171,6 +198,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.State field.
+        /// </summary>
         public string State 
         {
             get 
@@ -191,6 +221,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.Reason field.
+        /// </summary>
         public string Reason 
         {
             get 
@@ -211,6 +244,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.CreatedDate field.
+        /// </summary>
         public DateTime? CreatedDate
         {
             get 
@@ -231,6 +267,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.CreatedBy field.
+        /// </summary>
         public IdentityRef CreatedBy 
         {
             get 
@@ -240,6 +279,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.ChangedDate field.
+        /// </summary>
         public DateTime? ChangedDate
         {
             get 
@@ -260,6 +302,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.ChangedBy field.
+        /// </summary>
         public IdentityRef ChangedBy 
         {
             get 
@@ -269,6 +314,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Common.Priority field.
+        /// </summary>
         public long? Priority 
         {
             get 
@@ -289,6 +337,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Common.Severity field.
+        /// </summary>
         public string Severity 
         {
             get 
@@ -309,6 +360,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Scheduling.Effort field.
+        /// </summary>
         public double? Effort 
         {
             get 
@@ -329,6 +383,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.Title field.
+        /// </summary>
         public string Title 
         {
             get 
@@ -349,6 +406,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// System.Description field.
+        /// </summary>
         public string Description 
         {
             get 
@@ -369,6 +429,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
         
+        /// <summary>
+        /// System.Parent field.
+        /// </summary>
         public long? Parent 
         {
             get 
@@ -389,6 +452,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Scheduling.RemainingWork field.
+        /// </summary>
         public double? RemainingWork 
         {
             get 
@@ -409,6 +475,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Scheduling.OriginalEstimate field.
+        /// </summary>
         public double? OriginalEstimate 
         {
             get 
@@ -429,6 +498,9 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <summary>
+        /// Microsoft.VSTS.Scheduling.CompletedWork field.
+        /// </summary>
         public double? CompletedWork 
         {
             get 
@@ -451,6 +523,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
+        /// <summary>
+        /// Snapshot of this object, in JSON form. Used for change detection.
+        /// </summary>
         public JObject OriginalJson { get; protected set; }
 
         internal static WorkItemProxy FromWorkItem(WorkItem item, Type specificType = null)

@@ -5,7 +5,11 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
-    [Binding]    
+    /// <summary>
+    /// Injects WorkHttpClient instance into your Function.
+    /// <seealso href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.teamfoundation.workitemtracking.webapi.workitemtrackinghttpclient"/>
+    /// </summary>
+    [Binding]
     [AttributeUsage(AttributeTargets.Parameter)]
     public class WorkItemClientAttribute : Attribute
     {

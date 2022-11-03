@@ -14,7 +14,7 @@ namespace AzFunc4DevOps.AzureDevOps
         public ReleaseEnvironmentStatusCollector(VssConnection connection, ReleaseEnvironmentStatusAttribute attr)
         {
             this._connection = connection;
-            this._projectName = attr.ProjectName;
+            this._project = attr.Project;
         }
 
         public async Task AddAsync(ReleaseEnvironmentStatus envStatus, CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             var client = await this._connection.GetClientAsync<ReleaseHttpClient>();
 
-            var release = await client.GetReleaseAsync(this._projectName, envStatus.ReleaseId);
+            var release = await client.GetReleaseAsync(this._project, envStatus.ReleaseId);
 
             var env = release.Environments.SingleOrDefault(e => e.Id == envStatus.ReleaseEnvironmentId);
 
@@ -63,7 +63,7 @@ namespace AzFunc4DevOps.AzureDevOps
                     }
                 }
 
-                await client.UpdateReleaseAsync(release, this._projectName, envStatus.ReleaseId);
+                await client.UpdateReleaseAsync(release, this._project, envStatus.ReleaseId);
 
                 envStatus.Variables.Clear();
             }
@@ -75,7 +75,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
             // This method effectively only able to change the status. And only if the status is really being changed 
             // (otherwise it says it can't change the status that is not changing).
-            await client.UpdateReleaseEnvironmentAsync(envStatus, this._projectName, envStatus.ReleaseId, envStatus.ReleaseEnvironmentId);
+            await client.UpdateReleaseEnvironmentAsync(envStatus, this._project, envStatus.ReleaseId, envStatus.ReleaseEnvironmentId);
         }
 
         public Task FlushAsync(CancellationToken cancellationToken = default)
@@ -84,6 +84,6 @@ namespace AzFunc4DevOps.AzureDevOps
         }
 
         private readonly VssConnection _connection;
-        private readonly string _projectName;
+        private readonly string _project;
     }
 }

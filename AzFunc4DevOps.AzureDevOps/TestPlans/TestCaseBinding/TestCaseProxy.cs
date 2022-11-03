@@ -11,6 +11,9 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class TestCaseProxy : WorkItemProxy
     {
+        /// <summary>
+        /// List of Steps in this Test Case
+        /// </summary>
         public ICollection<TestStepProxy> TestSteps
         {
             get 

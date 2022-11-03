@@ -7,7 +7,7 @@ using TestSuite = Microsoft.VisualStudio.Services.TestManagement.TestPlanning.We
 namespace AzFunc4DevOps.AzureDevOps
 {
     /// <summary>
-    /// Represents the 'Test Suite' entity.
+    /// Represents the 'Test Suite' object.
     /// </summary>
     public class TestSuiteProxy : TestSuite
     {
@@ -49,7 +49,14 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class TestCaseId
     {
+        /// <summary>
+        /// Work Item ID of this Test Case.
+        /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// (Optional) IDs of Test Configurations assigned to this Test Case.
+        /// </summary>
         public ICollection<int> ConfigurationIds { get; set; }
 
         public TestCaseId()
