@@ -11,9 +11,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class TestSuiteProxy : TestSuite
     {
-        public JObject OriginalJson { get; protected set; }
-        internal List<TestCaseId> OriginalTestCases { get; private set; }
+        /// <summary>
+        /// List of Test Cases in this Test Suite.
+        /// </summary>
         public ICollection<TestCaseId> TestCases { get; private set; }
+
+        internal List<TestCaseId> OriginalTestCases { get; private set; }
 
         internal static TestSuiteProxy FromTestSuite(TestSuite item, List<TestCaseId> testCases = null)
         {
@@ -22,9 +25,6 @@ namespace AzFunc4DevOps.AzureDevOps
 
             proxy.TestCases = testCases ?? new List<TestCaseId>();
             proxy.OriginalTestCases = proxy.TestCases.ToList();
-
-            // Preserving the original values, to be able to detect changes later
-            proxy.OriginalJson = jObject;
 
             return proxy;
         }
