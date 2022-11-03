@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
+using Microsoft.VisualStudio.Services.WebApi.Patch;
+using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
@@ -22,11 +24,22 @@ namespace AzFunc4DevOps.AzureDevOps
                 return;
             }
 
-            var patchDoc = workItem.GetJsonPatchDocument();
+            var patchDoc = workItem.GetJsonPatchDocument(out var originalRev);
 
             if (patchDoc.Count <= 0)
             {
                 return;
+            }
+
+            // Adding optimistic locking
+            if (originalRev.HasValue)
+            {
+                patchDoc.Add(new JsonPatchOperation()
+                {
+                    Operation = Operation.Test,
+                    Path = "/rev",
+                    Value = originalRev.Value
+                });
             }
 
             var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();

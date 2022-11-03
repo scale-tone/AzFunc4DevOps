@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
@@ -536,32 +538,44 @@ namespace AzFunc4DevOps.AzureDevOps
             // Preserving the original values, to be able to detect changes later
             proxy.OriginalJson = jObject;
 
+            // More initializations
+            if (proxy.Relations == null)
+            {
+                proxy.Relations = new List<WorkItemRelation>();
+            }
+
             return proxy;
         }
 
-        public virtual JsonPatchDocument GetJsonPatchDocument()
+        public virtual JsonPatchDocument GetJsonPatchDocument(out int? originalRev)
         {
             var doc = new JsonPatchDocument();
 
             var original = this.OriginalJson == null ? new WorkItem() : this.OriginalJson.ToObject<WorkItem>();
+            originalRev = original.Rev;
+
+            // Fields
 
             foreach(var kv in this.Fields)
             {               
                 if (original.Fields.ContainsKey(kv.Key))
                 {
-                    var originalValue = original.Fields[kv.Key];
-
-                    if (this.AreDifferent(originalValue, kv.Value))
+                    if (kv.Value != null)
                     {
-                        doc.Add(new JsonPatchOperation()
-                        {
-                            Operation = Operation.Replace,
-                            Path = $"/fields/{kv.Key}",
-                            Value = kv.Value
-                        });
-                    }
+                        var originalValue = original.Fields[kv.Key];
 
-                    original.Fields.Remove(kv.Key);
+                        if (this.AreDifferent(originalValue, kv.Value))
+                        {
+                            doc.Add(new JsonPatchOperation()
+                            {
+                                Operation = Operation.Replace,
+                                Path = $"/fields/{kv.Key}",
+                                Value = kv.Value
+                            });
+                        }
+
+                        original.Fields.Remove(kv.Key);
+                    }
                 }
                 else
                 {
@@ -583,14 +597,50 @@ namespace AzFunc4DevOps.AzureDevOps
                 });
             }
 
-            if (doc.Count > 0 && original.Rev.HasValue)
+            // Relations
+
+            var relationsToBeAdded = new List<WorkItemRelation>();
+            int i = 0;
+            if (original.Relations != null)
             {
-                // Adding optimistic locking
+                for (; i < original.Relations.Count; i++)
+                {
+                    var originalRel = original.Relations[i];
+                    var newRel = (this.Relations != null && i < this.Relations.Count) ? this.Relations[i] : null;
+
+                    if (this.AreEqual(originalRel, newRel))
+                    {
+                        continue;
+                    }
+
+                    doc.Add(new JsonPatchOperation()
+                    {
+                        Operation = Operation.Remove,
+                        Path = $"/relations/{i}"
+                    });
+
+                    if (newRel != null)
+                    {
+                        relationsToBeAdded.Add(newRel);
+                    }
+                }
+            }
+
+            if (this.Relations != null)
+            {
+                for (; i < this.Relations.Count; i++)
+                {
+                    relationsToBeAdded.Add(this.Relations[i]);
+                }
+            }
+
+            foreach(var newRel in relationsToBeAdded)
+            {
                 doc.Add(new JsonPatchOperation()
                 {
-                    Operation = Operation.Test,
-                    Path = "/rev",
-                    Value = original.Rev
+                    Operation = Operation.Add,
+                    Path = $"/relations/-",
+                    Value = newRel
                 });
             }
 
@@ -613,6 +663,20 @@ namespace AzFunc4DevOps.AzureDevOps
             }
 
             return oldValue == null ? true : !oldValue.Equals(newValue);
+        }
+
+        private bool AreEqual(WorkItemRelation first, WorkItemRelation second)
+        {
+            if (first == null || second == null)
+            {
+                return false;
+            }
+
+            return
+                first.Url?.ToLower() == second.Url?.ToLower() &&
+                first.Rel == second.Rel &&
+                first.Title == second.Title &&
+                JToken.DeepEquals(JObject.FromObject(first.Attributes), JObject.FromObject(second.Attributes));
         }
     }
 }

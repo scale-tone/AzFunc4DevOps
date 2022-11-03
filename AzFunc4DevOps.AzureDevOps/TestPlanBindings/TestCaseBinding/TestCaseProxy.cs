@@ -52,9 +52,9 @@ namespace AzFunc4DevOps.AzureDevOps
             this.WorkItemType = "Test Case";
         }
 
-        public override JsonPatchDocument GetJsonPatchDocument()
+        public override JsonPatchDocument GetJsonPatchDocument(out int? originalRev)
         {
-            var doc = base.GetJsonPatchDocument();
+            var doc = base.GetJsonPatchDocument(out originalRev);
 
             if (this._steps == null || this._helper == null)
             {
