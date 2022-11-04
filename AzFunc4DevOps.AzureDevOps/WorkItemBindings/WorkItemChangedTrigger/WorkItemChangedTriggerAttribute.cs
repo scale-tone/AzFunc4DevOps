@@ -5,6 +5,7 @@ namespace AzFunc4DevOps.AzureDevOps
     /// <summary>
     /// Triggers a Function when a Work Item is changed. Changes are detected by watching Work Item's revision numbers.
     /// Function's parameter should be of <see cref="WorkItemChange"/> type.
+    /// Currently retries every 1 minute FOREVER. Make sure to handle your exceptions.
     /// Use <see cref="WiqlQueryWhereClause"/> property to restrict the kind of Work Items to be triggered for.
     /// </summary>
     [Binding]

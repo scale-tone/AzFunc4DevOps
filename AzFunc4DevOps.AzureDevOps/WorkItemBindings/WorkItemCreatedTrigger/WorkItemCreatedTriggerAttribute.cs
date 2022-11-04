@@ -4,6 +4,7 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     /// <summary>
     /// Triggered when a new Work Item is created.
+    /// Currently retries every 1 minute FOREVER. Make sure to handle your exceptions.
     /// Use <see cref="WiqlQueryWhereClause"/> property to restrict the kind of Work Items to be triggered for.
     /// </summary>
     [Binding]

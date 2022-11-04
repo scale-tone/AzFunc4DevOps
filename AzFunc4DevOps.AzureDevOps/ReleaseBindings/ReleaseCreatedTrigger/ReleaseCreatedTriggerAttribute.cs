@@ -5,6 +5,7 @@ namespace AzFunc4DevOps.AzureDevOps
 {
     /// <summary>
     /// Triggered when a new Release is created.
+    /// Currently retries every 1 minute FOREVER. Make sure to handle your exceptions.
     /// </summary>
     [Binding]    
     public class ReleaseCreatedTriggerAttribute : GenericTriggerAttribute
