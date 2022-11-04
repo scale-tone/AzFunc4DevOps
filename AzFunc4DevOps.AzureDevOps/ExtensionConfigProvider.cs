@@ -35,7 +35,7 @@ namespace AzFunc4DevOps.AzureDevOps
             // and also pass to our own Initialize() method, so that it can be used by bindings
             // (because bindings do not seem to have a way to access DI container).
 
-            var vssConnection = new VssConnection(new Uri(Settings.AZURE_DEVOPS_ORG_URL), new VssBasicCredential(string.Empty, Settings.AZURE_DEVOPS_PAT));
+            var vssConnection = new VssConnection(new Uri(Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL), new VssBasicCredential(string.Empty, Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_PAT));
 
             builder.Services.AddSingleton(vssConnection);
 

@@ -13,9 +13,15 @@ namespace AzFunc4DevOps.AzureDevOps
 
         public static Random Rnd = new Random();
 
-        public static Task DelayForAboutASecond()
+        public static Task PollingDelay()
         {
-            return Task.Delay(TimeSpan.FromMilliseconds(Rnd.Next(500, 1500)));
+            int pollingIntervalInMilliseconds = Convert.ToInt32(Settings.AZFUNC4DEVOPS_POLL_INTERVAL_IN_SECONDS * 1000);
+
+            // Blurring it a bit, to distribute load.
+            int blur = pollingIntervalInMilliseconds > 1000 ? 1000 : pollingIntervalInMilliseconds;
+            var delay = TimeSpan.FromMilliseconds(Rnd.Next(pollingIntervalInMilliseconds - blur, pollingIntervalInMilliseconds + blur));
+
+            return Task.Delay(delay);
         }
 
         public static string GetMd5Hash(this string str)

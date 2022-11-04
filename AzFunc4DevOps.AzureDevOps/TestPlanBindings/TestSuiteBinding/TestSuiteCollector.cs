@@ -36,14 +36,14 @@ namespace AzFunc4DevOps.AzureDevOps
             // Something is broken in SDK, so by now will be using raw REST API calls.
             // TODO: find a way to optimize (not just drop/add test cases, but do it in a smarter way)
 
-            string basicCredentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", string.Empty, Settings.AZURE_DEVOPS_PAT)));
+            string basicCredentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", string.Empty, Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_PAT)));
 
             if (suite.OriginalTestCases.Any())
             {
                 // Dropping all previously existed test cases
                 string ids = string.Join(",", suite.OriginalTestCases.Select(tc => tc.Id));
 
-                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{ids}?api-version=5.0";
+                string uri = $"{Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{ids}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Delete, uri))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicCredentials);
@@ -59,7 +59,7 @@ namespace AzFunc4DevOps.AzureDevOps
             // Adding test cases anew. Can't do it via a single call, because in that case the order will be lost (looks like the server always first _sorts_ ids to be added)
             foreach (var testCase in suite.TestCases)
             {
-                string uri = $"{Settings.AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{testCase.Id}?api-version=5.0";
+                string uri = $"{Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{testCase.Id}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicCredentials);

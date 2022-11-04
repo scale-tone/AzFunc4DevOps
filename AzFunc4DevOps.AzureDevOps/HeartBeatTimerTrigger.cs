@@ -17,8 +17,8 @@ namespace AzFunc4DevOps.AzureDevOps
         private readonly TriggerExecutorRegistry _executorRegistry;
         public static readonly Regex EntityIdRegex = new Regex(@"@([\w-]+)@(.+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        private const int TimerIntervalInSec = 30;
-        private const string TimerCronExpr = "*/30 * * * * *";
+        internal const int TimerIntervalInSec = 60;
+        private const string TimerCronExpr = "0 * * * * *";
 
         [FunctionName(Global.FunctionPrefix + nameof(HeartBeatTimerTrigger))]
         public async Task Run

@@ -166,7 +166,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 }
 
                 // Delay until next attempt
-                await Global.DelayForAboutASecond();
+                await Global.PollingDelay();
             }
         }
 
