@@ -59,7 +59,9 @@ namespace AzFunc4DevOps.AzureDevOps
                         definitionId: definitionId,
                         createdBy: attribute.CreatedBy,
                         path: attribute.ReleaseFolderPath,
-                        expand: ReleaseExpands.Environments
+                        expand: ReleaseExpands.Environments,
+                        // By far just taking the first batch of latest releases. TODO: check what's the actual batch size and whether it is big enough.
+                        queryOrder: ReleaseQueryOrder.Descending
                     ))
                     .SelectMany(r => r.Environments)
                     .Where(s => {

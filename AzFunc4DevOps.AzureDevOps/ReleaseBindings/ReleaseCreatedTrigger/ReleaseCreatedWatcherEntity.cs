@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
+using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
@@ -49,7 +50,9 @@ namespace AzFunc4DevOps.AzureDevOps
                         definitionId: definitionId,
                         createdBy: attribute.CreatedBy,
                         path: attribute.ReleaseFolderPath,
-                        expand: ReleaseExpands.None
+                        expand: ReleaseExpands.None,
+                        // By far just taking the first batch of latest releases. TODO: check what's the actual batch size and whether it is big enough.
+                        queryOrder: ReleaseQueryOrder.Descending
                     ))
                     .Select(r => r.Id)
                     .ToList();

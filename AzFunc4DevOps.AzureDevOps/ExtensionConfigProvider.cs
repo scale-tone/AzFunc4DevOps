@@ -131,6 +131,10 @@ namespace AzFunc4DevOps.AzureDevOps
             // Bindings
 
             context
+                .AddBindingRule<VssConnectionAttribute>()
+                .BindToInput<VssConnection>((_) => this._vssConnection);
+
+            context
                 .AddBindingRule<WorkItemClientAttribute>()
                 .BindToInput<WorkItemTrackingHttpClient>((_) => WorkItemClientAttribute.CreateClient(this._vssConnection));
 

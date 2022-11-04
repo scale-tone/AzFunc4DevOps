@@ -72,7 +72,9 @@ namespace AzFunc4DevOps.AzureDevOps
                     buildNumber: attribute.BuildNumber,
                     requestedFor: attribute.RequestedFor,
                     reasonFilter: buildReasons,
-                    repositoryId: attribute.RepositoryId
+                    repositoryId: attribute.RepositoryId,
+                    // By far just taking the first batch of latest builds. TODO: check what's the actual batch size and whether it is big enough.
+                    queryOrder: BuildQueryOrder.StartTimeDescending
                 );
 
                 if (this.CurrentStatuses == null)

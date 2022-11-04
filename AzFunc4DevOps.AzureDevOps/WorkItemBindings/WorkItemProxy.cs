@@ -654,7 +654,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 return false;
             }
 
-            var type = oldValue == null ? newValue.GetType() : oldValue.GetType();
+            var type = newValue == null ? oldValue.GetType() : newValue.GetType();
 
             // Right now only values and strings are supported (complex types are not)
             if (!(type.IsValueType || type == typeof(string)))

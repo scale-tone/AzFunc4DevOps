@@ -50,7 +50,7 @@ namespace AzFunc4DevOps.AzureDevOps
         /// <summary>
         /// When specified, only builds from that repository will be observed.
         /// E.g. <example>"14BAE3DC-067A-4A07-8BA9-1223646C9F44"</example>.
-        /// TODO: needs to be combined with RepositoryType, so doesn't work yet. Replace with RepositoryName.
+        /// TODO: needs to be used together with RepositoryType, so doesn't work yet. Replace with RepositoryName.
         /// </summary>
         [AutoResolve]
         internal string RepositoryId { get; set; }
