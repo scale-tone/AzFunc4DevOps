@@ -107,8 +107,12 @@ namespace AzFunc4DevOps.AzureDevOps
                 TriggerValue = ReleaseProxy.FromRelease(release)
             };
 
-            //TODO: handle exceptions
-            await executor.TryExecuteAsync(data, CancellationToken.None);
+            var result = await executor.TryExecuteAsync(data, CancellationToken.None);
+
+            if (!result.Succeeded && result.Exception != null)
+            {
+                throw result.Exception;
+            }
         }
 
 

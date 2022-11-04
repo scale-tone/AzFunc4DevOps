@@ -106,8 +106,12 @@ namespace AzFunc4DevOps.AzureDevOps
                 TriggerValue = WorkItemProxy.FromWorkItem(workItem)
             };
 
-            //TODO: handle exceptions
-            await executor.TryExecuteAsync(data, CancellationToken.None);
+            var result = await executor.TryExecuteAsync(data, CancellationToken.None);
+
+            if (!result.Succeeded && result.Exception != null)
+            {
+                throw result.Exception;
+            }
         }
 
         // Required boilerplate
