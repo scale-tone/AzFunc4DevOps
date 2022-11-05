@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+    <PackageId>AzFunc4DevOps.AzureDevOps</PackageId>
+    <VersionPrefix>0.0.5</VersionPrefix>
+    <PackageTags>Azure;Functions;DevOps</PackageTags>
+    <Description>Azure Functions triggers and bindings for Azure DevOps</Description>
+    <Authors>AzFunc4DevOps</Authors>
+    <RepositoryUrl>https://github.com/scale-tone/AzFunc4DevOps</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +23,19 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.8.1" />
     <PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.170.0" />
     <PackageReference Include="Microsoft.VisualStudio.Services.Release.Client" Version="16.170.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <Content Include="AzFunc4DevOps.AzureDevOps.targets">
+      <PackagePath>build</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    <Content Include="LICENSE">
+      <PackagePath>/</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Host.Executors;
 
@@ -26,6 +25,11 @@ namespace AzFunc4DevOps.AzureDevOps
             // Formatting an id of the entity that will take care about this trigger binding
             string entityTypeName = typeof(TWatcherEntity).Name;
             var entityId = new EntityId(Global.FunctionPrefix + entityTypeName, attribute.GetWatcherEntityKey());
+
+            if (this._executorMap.ContainsKey(entityId))
+            {
+                throw new NotSupportedException($"Multiple functions triggered by {attribute.GetType().Name} with same set of parameters are not supported.");
+            }
 
             // Registering that entity in the map
             this._executorMap[entityId] = new AttributeAndExecutor(attribute, executor);

@@ -23,13 +23,42 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class TestStepProxy
     {
+        /// <summary>
+        /// Action text.
+        /// E.g. <example>"Open browser window"</example>
+        /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// Expected result of this step.
+        /// E.g. <example>"Browser windows opens"</example>
+        /// </summary>
         public string ExpectedResult { get; set; }
+
+        /// <summary>
+        /// Arbitrary description.
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Test Step Type. 
+        /// Allowed values: <see cref="Microsoft.TeamFoundation.TestManagement.WebApi.TestStepType"/>
+        /// </summary>
         public TestStepType TestStepType { get; set; }
+
+        /// <summary>
+        /// ID of this Test Step.
+        /// </summary>
         public int Id { get; private set; }
+
+        /// <summary>
+        /// If this is a shared step, here comes its ID.
+        /// </summary>
         public int? SharedStepId { get; set; }
 
+        /// <summary>
+        /// List of attachments (screenshots, images, documents etc.), that belong to this Test Step.
+        /// </summary>
         public ICollection<TestAttachmentProxy> Attachments { get; private set; }
 
         public TestStepProxy()
