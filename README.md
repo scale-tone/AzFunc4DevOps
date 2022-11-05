@@ -6,4 +6,4 @@ A set of [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guid
 
 ## Reference
 
-See the [documentaion in our Wiki](https://github.com/scale-tone/AzFunc4DevOps/wiki).
+See the [documentation in our Wiki](https://github.com/scale-tone/AzFunc4DevOps/wiki).
