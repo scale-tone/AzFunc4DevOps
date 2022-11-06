@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    
+    "AzureWebJobsStorage": "@KeeShepherd(MyAzureStorageConnectionString)",
+    "AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL": "@KeeShepherd(MyAzureDevOpsOrgUrl)",
+    "AZFUNC4DEVOPS_AZURE_DEVOPS_PAT": "@KeeShepherd(MyAzureDevOpsPat)",
+
+    "TEAM_PROJECT_NAME": "@KeeShepherd(MyAzureDevOpsProjectName)",
+    "BUILD_DEFINITION_ID": "24",
+    "RELEASE_DEFINITION_ID": "3"
+  }
+}

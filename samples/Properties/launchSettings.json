@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AzFunc4DevOps.AzureDevOps.Samples": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7143",
+      "launchBrowser": false
+    }
+  }
+}
