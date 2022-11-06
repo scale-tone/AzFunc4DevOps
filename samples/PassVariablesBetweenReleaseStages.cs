@@ -3,7 +3,7 @@ using AzFunc4DevOps.AzureDevOps;
 using Microsoft.Azure.WebJobs;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 
-namespace AzureDevOpsTestFunc
+namespace AzFunc4DevOps.Samples
 {
     /*
         Passes variables between Release Stages.

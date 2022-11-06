@@ -2,7 +2,7 @@ using AzFunc4DevOps.AzureDevOps;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.Azure.WebJobs;
 
-namespace AzureDevOpsTestFunc
+namespace AzFunc4DevOps.Samples
 {
     public static class AlignRemainingWorkWithCompletedWork
     {

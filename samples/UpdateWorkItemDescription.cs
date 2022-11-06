@@ -6,7 +6,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 using System.IO;
 
-namespace AzureDevOpsTestFunc
+namespace AzFunc4DevOps.Samples
 {
     public static class UpdateWorkItemDescription
     {

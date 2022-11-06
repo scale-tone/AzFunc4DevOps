@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace AzureDevOpsTestFunc
+namespace AzFunc4DevOps.Samples
 {
     public static class CreateTestCases
     {

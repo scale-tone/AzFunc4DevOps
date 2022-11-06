@@ -3,7 +3,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.TeamFoundation.Build.WebApi;
 using System.Threading.Tasks;
 
-namespace AzureDevOpsTestFunc
+namespace AzFunc4DevOps.Samples
 {
     public static class TriggerBuildWhenPullRequestCompleted
     {
