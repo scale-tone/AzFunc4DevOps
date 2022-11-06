@@ -83,6 +83,10 @@ public static class AddCriticalToBugTitle
   func start
 ```
 
+## Samples
+
+You can find more sample Functions [in the samples folder](https://github.com/scale-tone/AzFunc4DevOps/tree/main/samples#azfunc4devopsazuredevops-samples).
+
 
 ## Reference
 
