@@ -58,7 +58,7 @@ public static class AddCriticalToBugTitle
     (
         [WorkItemChangedTrigger
         (
-            Project = "%TEAM_PROJECT_NAME%",
+            Project = "MyProjectName",
             WiqlQueryWhereClause = "[System.WorkItemType] = 'Bug'",
             FieldName = "Microsoft.VSTS.Common.Severity",
             ToValue = "1 - Critical"
