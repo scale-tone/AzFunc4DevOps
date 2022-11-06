@@ -8,19 +8,22 @@ A set of [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guid
 
 As a prerequisite, you will need [Azure Functions Core Tools installed on your devbox](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local#install-the-azure-functions-core-tools).
 
-1. Create a local folder, name it e.g. `AzFunc4DevOpsTest` and initialize an Azure Functions .NET project in it:
+1. #### Create a local folder, name it e.g. `AzFunc4DevOpsTest` and initialize an Azure Functions .NET project in it:
 ``` 
   func init --worker-runtime dotnet
 ```
-2. Install [AzFunc4DevOps.AzureDevOps](https://www.nuget.org/packages/AzFunc4DevOps.AzureDevOps) NuGet package:
+
+2. #### Install [AzFunc4DevOps.AzureDevOps](https://www.nuget.org/packages/AzFunc4DevOps.AzureDevOps) NuGet package:
 ```
   dotnet add package AzFunc4DevOps.AzureDevOps --prerelease
 ```
-3. Open the folder in Visual Studio Code:
+
+3. #### Open the folder in Visual Studio Code:
 ```
   code .
 ```
-4. In `local.settings.json` file configure the following required settings:
+
+4. #### In `local.settings.json` file configure the following required settings:
 ```
 {
     "IsEncrypted": false,
@@ -43,7 +46,9 @@ As a prerequisite, you will need [Azure Functions Core Tools installed on your d
     
   NOTE: the PAT needs to be given all [relevant scopes](https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/oauth?view=azure-devops#scopes). E.g. if your Function is going to read/write Work Items, then `vso.work_write` will be needed.
 
-5. Start adding Functions that use AzFunc4DevOps triggers and bindings. E.g. the following Function adds `[Critical]` title prefix to a bug, once its `Severity` field changes to `1 - Critical`:
+
+5. #### Start adding Functions that use AzFunc4DevOps triggers and bindings. 
+  E.g. the following Function adds `[Critical]` title prefix to a bug, once its `Severity` field changes to `1 - Critical`:
 ```
 public static class AddCriticalToBugTitle
 {
@@ -73,7 +78,7 @@ public static class AddCriticalToBugTitle
 }
 ```
 
-6. Run your Function locally:
+6. #### Run your Function locally:
 ```
   func start
 ```
