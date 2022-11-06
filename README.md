@@ -4,6 +4,81 @@ A set of [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guid
 
 [<img alt="Nuget" src="https://img.shields.io/nuget/v/AzFunc4DevOps.AzureDevOps?label=current%20version">](https://www.nuget.org/profiles/AzFunc4DevOps) 
 
+## How to use
+
+As a prerequisite, you will need [Azure Functions Core Tools installed on your devbox](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local#install-the-azure-functions-core-tools).
+
+1. Create a local folder, name it e.g. `AzFunc4DevOpsTest` and initialize an Azure Functions .NET project in it:
+``` 
+  func init --worker-runtime dotnet
+```
+2. Install [AzFunc4DevOps.AzureDevOps](https://www.nuget.org/packages/AzFunc4DevOps.AzureDevOps) NuGet package:
+```
+  dotnet add package AzFunc4DevOps.AzureDevOps --prerelease
+```
+3. Open the folder in Visual Studio Code:
+```
+  code .
+```
+4. In `local.settings.json` file configure the following required settings:
+```
+{
+    "IsEncrypted": false,
+    "Values": {
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+
+        "AzureWebJobsStorage": "my-azure-storage-connection-string",
+
+        "AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL": "https://dev.azure.com/my-company-name",
+        "AZFUNC4DEVOPS_AZURE_DEVOPS_PAT": "my-azure-devops-personal-access-token"
+    }
+}
+```
+  
+  `AzureWebJobsStorage` needs to be configured, because AzFunc4DevOps internally uses [Azure Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview), which require a storage.
+  
+  `AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL` is your Azure DevOps organization's full URL. E.g. `https://dev.azure.com/my-company-name`.
+  
+  `AZFUNC4DEVOPS_AZURE_DEVOPS_PAT` is your Azure DevOps Personal Access Token. [Create one in Azure DevOps portal](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate#create-a-pat). Alternatively use [KeeShepherd](https://marketplace.visualstudio.com/items?itemName=kee-shepherd.kee-shepherd-vscode) tool for creating and safely handling it. 
+    
+  NOTE: the PAT needs to be given all [relevant scopes](https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/oauth?view=azure-devops#scopes). E.g. if your Function is going to read/write Work Items, then `vso.work_write` will be needed.
+
+5. Start adding Functions that use AzFunc4DevOps triggers and bindings. E.g. the following Function adds `[Critical]` title prefix to a bug, once its `Severity` field changes to `1 - Critical`:
+```
+public static class AddCriticalToBugTitle
+{
+    [FunctionName(nameof(AddCriticalToBugTitle))]
+    [return: WorkItem(Project = "MyProjectName")]
+    public static WorkItemProxy Run
+    (
+        [WorkItemChangedTrigger
+        (
+            Project = "%TEAM_PROJECT_NAME%",
+            WiqlQueryWhereClause = "[System.WorkItemType] = 'Bug'",
+            FieldName = "Microsoft.VSTS.Common.Severity",
+            ToValue = "1 - Critical"
+        )]
+        WorkItemChange change
+    )
+    {
+        var item = change.NewVersion;
+
+        if (!item.Title.StartsWith("[Critical]"))
+        {
+            item.Title = "[Critical] " + item.Title;
+        }
+
+        return item;
+    }
+}
+```
+
+6. Run your Function locally:
+```
+  func start
+```
+
+
 ## Reference
 
 See the [documentation in our Wiki](https://github.com/scale-tone/AzFunc4DevOps/wiki).
