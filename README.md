@@ -38,7 +38,7 @@ As a prerequisite, you will need [Azure Functions Core Tools installed on your d
 }
 ```
   
-  `AzureWebJobsStorage` needs to be configured, because AzFunc4DevOps internally uses [Azure Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview), which require a storage.
+  `AzureWebJobsStorage` needs to be configured, because AzFunc4DevOps internally uses [Azure Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview), which require a storage. It's OK to use [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite) for local development.
   
   `AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL` is your Azure DevOps organization's full URL. E.g. `https://dev.azure.com/my-company-name`.
   
