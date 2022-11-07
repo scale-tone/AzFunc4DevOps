@@ -47,7 +47,7 @@ namespace AzFunc4DevOps.Samples
         // Need to return the given Test Suite, to indicate that changes to it need to be persisted
         [return: TestSuite(Project = "%TEAM_PROJECT_NAME%")]
         public static TestSuiteProxy Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
 
             // Binding to a root Test Suite by testPlanId, which is expected to come as a query string parameter
             [TestSuite(Project = "%TEAM_PROJECT_NAME%", PlanId = "{Query.testPlanId}")]

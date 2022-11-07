@@ -17,7 +17,7 @@ namespace AzFunc4DevOps.Samples
         [FunctionName(nameof(UpdateWorkItemDescription))]
         [return: WorkItem(Project = "%TEAM_PROJECT_NAME%")]
         public static WorkItemProxy Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "put")] HttpRequest req,
             
             // Binding to a WorkItem by workItemId, which is expected to come as a query string parameter
             [WorkItem(Project = "%TEAM_PROJECT_NAME%", Id = "{Query.workItemId}")]
