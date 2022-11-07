@@ -22,6 +22,7 @@ As a prerequisite, you will need [Azure Functions Core Tools installed on your d
 ```
   code .
 ```
+Alternatively open the project in Visual Studio or any other IDE of your choice.
 
 #### 4. In `local.settings.json` file configure the following required settings:
 ```
