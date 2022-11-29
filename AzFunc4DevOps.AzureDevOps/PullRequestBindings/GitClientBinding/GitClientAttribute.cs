@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
@@ -11,11 +10,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class GitClientAttribute : Attribute
+    public class GitClientAttribute : GenericBindingAttribute
     {
-        public static GitHttpClient CreateClient(VssConnection connection)
+        /// <inheritdoc />
+        public GitHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<GitHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<GitHttpClient>();
         }
     }
 }

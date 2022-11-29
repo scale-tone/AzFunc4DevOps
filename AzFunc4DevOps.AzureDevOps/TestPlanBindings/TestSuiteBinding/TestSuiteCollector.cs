@@ -12,14 +12,17 @@ using Newtonsoft.Json.Linq;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class TestSuiteCollector : IAsyncCollector<TestSuiteProxy>
     {
-        public TestSuiteCollector(VssConnection connection, TestSuiteAttribute attr)
+        /// <inheritdoc />
+        public TestSuiteCollector(VssConnectionFactory connFactory, TestSuiteAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
         }
 
+        /// <inheritdoc />
         public async Task AddAsync(TestSuiteProxy suite, CancellationToken cancellationToken = default)
         {
             if (!JToken.DeepEquals(suite.OriginalJson, JObject.FromObject(suite)) )
@@ -97,6 +100,7 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <inheritdoc />
         public Task FlushAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;

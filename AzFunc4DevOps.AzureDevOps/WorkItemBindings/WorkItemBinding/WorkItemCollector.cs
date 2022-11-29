@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -9,14 +8,17 @@ using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class WorkItemCollector : IAsyncCollector<WorkItemProxy>
     {
-        public WorkItemCollector(VssConnection connection, WorkItemAttribute attr)
+        /// <inheritdoc />
+        public WorkItemCollector(VssConnectionFactory connFactory, WorkItemAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
         }
 
+        /// <inheritdoc />
         public async Task AddAsync(WorkItemProxy workItem, CancellationToken cancellationToken = default)
         {
             if (workItem == null)
@@ -57,6 +59,7 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <inheritdoc />
         public Task FlushAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;

@@ -9,14 +9,17 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class ReleaseEnvironmentCollector : IAsyncCollector<ReleaseEnvironmentProxy>
     {
-        public ReleaseEnvironmentCollector(VssConnection connection, ReleaseEnvironmentAttribute attr)
+        /// <inheritdoc />
+        public ReleaseEnvironmentCollector(VssConnectionFactory connFactory, ReleaseEnvironmentAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
         }
 
+        /// <inheritdoc />
         public async Task AddAsync(ReleaseEnvironmentProxy releaseStage, CancellationToken cancellationToken = default)
         {
             if (releaseStage == null || releaseStage.Id == 0 || releaseStage.ReleaseId == 0)
@@ -51,6 +54,7 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
+        /// <inheritdoc />
         public Task FlushAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;

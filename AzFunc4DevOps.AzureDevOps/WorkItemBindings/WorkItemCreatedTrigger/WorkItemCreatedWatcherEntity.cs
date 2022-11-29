@@ -20,9 +20,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public WorkItemCreatedWatcherEntity(VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public WorkItemCreatedWatcherEntity(VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
         }
 
@@ -34,7 +34,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 return;
             }
 
-            var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
+            var workItemClient = await this._connFactory.GetVssConnection(attribute).GetClientAsync<WorkItemTrackingHttpClient>();
 
             while (true)
             {
@@ -92,7 +92,7 @@ namespace AzFunc4DevOps.AzureDevOps
         // TODO: Turn into a setting
         private const int ObservationPeriodInDays = 15;
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
 
         private async Task InvokeFunction(WorkItemTrackingHttpClient workItemClient, string projectName, int workItemId)

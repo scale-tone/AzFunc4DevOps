@@ -8,7 +8,6 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Build.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
@@ -20,9 +19,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public BuildStatusChangedWatcherEntity(ILogger log, VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public BuildStatusChangedWatcherEntity(ILogger log, VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
             this._log = log;
         }
@@ -59,7 +58,7 @@ namespace AzFunc4DevOps.AzureDevOps
             // This flag is to ensure that this heuristics doesn't cause the trigger to fire twice.
             var shouldBeTriggeredOnlyOnce = (!string.IsNullOrWhiteSpace(attribute.FromValue)) || (!string.IsNullOrWhiteSpace(attribute.ToValue));
 
-            var buildClient = await this._connection.GetClientAsync<BuildHttpClient>();
+            var buildClient = await this._connFactory.GetVssConnection(attribute).GetClientAsync<BuildHttpClient>();
 
             // Storing here the items which function invocation failed for. So that they are only retried during next polling session.
             var failedBuildIds = new HashSet<int>();
@@ -138,7 +137,7 @@ namespace AzFunc4DevOps.AzureDevOps
             }
         }
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly ILogger _log;
 

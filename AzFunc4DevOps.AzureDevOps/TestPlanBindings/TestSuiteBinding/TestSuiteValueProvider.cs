@@ -8,18 +8,22 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class TestSuiteValueProvider : IValueBinder
     {
-        public TestSuiteValueProvider(VssConnection connection, TestSuiteAttribute attr)
+        /// <inheritdoc />
+        public TestSuiteValueProvider(VssConnectionFactory connFactory, TestSuiteAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
             this._planId = int.Parse(attr.PlanId);
             this._id = string.IsNullOrWhiteSpace(attr.Id) ? (int?)null : int.Parse(attr.Id);
         }
 
+        /// <inheritdoc />
         public Type Type => typeof(TestSuiteProxy);
 
+        /// <inheritdoc />
         public async Task<object> GetValueAsync()
         {
             var client = await this._connection.GetClientAsync<TestPlanHttpClient>();
@@ -47,11 +51,13 @@ namespace AzFunc4DevOps.AzureDevOps
             return proxy;
         }
 
+        /// <inheritdoc />
         public Task SetValueAsync(object value, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public string ToInvokeString()
         {
             return $"{this._project}-{this._planId}-{this._id}";

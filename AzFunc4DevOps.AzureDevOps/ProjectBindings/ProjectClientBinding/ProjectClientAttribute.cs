@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
@@ -11,11 +10,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class ProjectClientAttribute : Attribute
+    public class ProjectClientAttribute : GenericBindingAttribute
     {
-        internal static ProjectHttpClient CreateClient(VssConnection connection)
+        /// <inheritdoc />
+        internal ProjectHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<ProjectHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<ProjectHttpClient>();
         }
     }
 }

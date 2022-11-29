@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host.Bindings;
@@ -10,7 +9,6 @@ using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.Work.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -26,22 +24,15 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class ExtensionConfigProvider : IExtensionConfigProvider, IWebJobsStartup
     {
+        /// <inheritdoc />
         public void Configure(IWebJobsBuilder builder)
         {
-            // According to its source code, VssConnection should be reused.
-            // Here we create a singleton instance of it, inject it into DI container
-            // and also pass to our own Initialize() method, so that it can be used by bindings
-            // (because bindings do not seem to have a way to access DI container).
-
-            var vssConnection = new VssConnection(new Uri(Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL), new VssBasicCredential(string.Empty, Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_PAT));
-
-            builder.Services.AddSingleton(vssConnection);
+            // Registering VssConnectionFactory
+            builder.Services.AddSingleton(new VssConnectionFactory());
 
             // Also creating, injecting into DI and passing to Initialize() the instance of TriggerExecutorRegistry class
             // (it acts as a map between binding executors and their relevant entities)
-
             var executorRegistry = new TriggerExecutorRegistry();
-
             builder.Services.AddSingleton(executorRegistry);
 
             // Adding bindings
@@ -58,13 +49,14 @@ namespace AzFunc4DevOps.AzureDevOps
         /// <summary>
         /// Used by IExtensionConfigProvider
         /// </summary>
-        public ExtensionConfigProvider(VssConnection vssConnection, TriggerExecutorRegistry executorRegistry, INameResolver nameResolver)
+        public ExtensionConfigProvider(VssConnectionFactory connectionFactory, TriggerExecutorRegistry executorRegistry, INameResolver nameResolver)
         {
-            this._vssConnection = vssConnection;
+            this._connectionFactory = connectionFactory;
             this._executorRegistry = executorRegistry;
             this._nameResolver = nameResolver;
         }
 
+        /// <inheritdoc />
         public void Initialize(ExtensionConfigContext context)
         {
             // Here is where attributes and bindings are welded together
@@ -130,81 +122,81 @@ namespace AzFunc4DevOps.AzureDevOps
 
             context
                 .AddBindingRule<VssConnectionAttribute>()
-                .BindToInput<VssConnection>((_) => this._vssConnection);
+                .BindToInput<VssConnection>(attr => this._connectionFactory.GetVssConnection(attr));
 
             context
                 .AddBindingRule<WorkItemClientAttribute>()
-                .BindToInput<WorkItemTrackingHttpClient>((_) => WorkItemClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<WorkItemTrackingHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             var workItemRule = context.AddBindingRule<WorkItemAttribute>();
-            workItemRule.BindToCollector(attr => new WorkItemCollector(this._vssConnection, attr));
+            workItemRule.BindToCollector(attr => new WorkItemCollector(this._connectionFactory, attr));
             workItemRule.BindToValueProvider(
-                (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
+                (attr, type) => Task.FromResult(new WorkItemValueProvider(this._connectionFactory, attr) as IValueBinder)
             );
 
             context
                 .AddBindingRule<WorkItemsAttribute>()
                 .BindToValueProvider(
-                    (attr, type) => Task.FromResult(new WorkItemsValueProvider(this._vssConnection, attr) as IValueBinder)
+                    (attr, type) => Task.FromResult(new WorkItemsValueProvider(this._connectionFactory, attr) as IValueBinder)
                 );
 
             var testCaseRule = context.AddBindingRule<TestCaseAttribute>();
-            testCaseRule.BindToCollector(attr => new WorkItemCollector(this._vssConnection, attr));
+            testCaseRule.BindToCollector(attr => new WorkItemCollector(this._connectionFactory, attr));
             testCaseRule.BindToValueProvider(
-                (attr, type) => Task.FromResult(new WorkItemValueProvider(this._vssConnection, attr) as IValueBinder)
+                (attr, type) => Task.FromResult(new WorkItemValueProvider(this._connectionFactory, attr) as IValueBinder)
             );
 
             var testSuiteRule = context.AddBindingRule<TestSuiteAttribute>();
-            testSuiteRule.BindToCollector(attr => new TestSuiteCollector(this._vssConnection, attr));
+            testSuiteRule.BindToCollector(attr => new TestSuiteCollector(this._connectionFactory, attr));
             testSuiteRule.BindToValueProvider(
-                (attr, type) => Task.FromResult(new TestSuiteValueProvider(this._vssConnection, attr) as IValueBinder)
+                (attr, type) => Task.FromResult(new TestSuiteValueProvider(this._connectionFactory, attr) as IValueBinder)
             );
 
             context
                 .AddBindingRule<ProjectAttribute>()
                 .BindToValueProvider(
-                    (attr, type) => Task.FromResult(new ProjectValueProvider(this._vssConnection, attr) as IValueBinder)
+                    (attr, type) => Task.FromResult(new ProjectValueProvider(this._connectionFactory, attr) as IValueBinder)
                 );
 
             context
                 .AddBindingRule<BuildDefinitionAttribute>()
                 .BindToValueProvider(
-                    (attr, type) => Task.FromResult(new BuildDefinitionValueProvider(this._vssConnection, attr) as IValueBinder)
+                    (attr, type) => Task.FromResult(new BuildDefinitionValueProvider(this._connectionFactory, attr) as IValueBinder)
                 );
 
             context
                 .AddBindingRule<BuildClientAttribute>()
                 // TODO: use async BindToInput() version
-                .BindToInput<BuildHttpClient>((_) => BuildClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<BuildHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             context
                 .AddBindingRule<GitClientAttribute>()
-                .BindToInput<GitHttpClient>((_) => GitClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<GitHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             context
                 .AddBindingRule<ProjectClientAttribute>()
-                .BindToInput<ProjectHttpClient>((_) => ProjectClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<ProjectHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             context
                 .AddBindingRule<ReleaseClientAttribute>()
-                .BindToInput<ReleaseHttpClient>((_) => ReleaseClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<ReleaseHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             context.AddBindingRule<ReleaseEnvironmentAttribute>()
-                .BindToCollector(attr => new ReleaseEnvironmentCollector(this._vssConnection, attr));
+                .BindToCollector(attr => new ReleaseEnvironmentCollector(this._connectionFactory, attr));
 
             context.AddBindingRule<ReleaseEnvironmentStatusAttribute>()
-                .BindToCollector(attr => new ReleaseEnvironmentStatusCollector(this._vssConnection, attr));
+                .BindToCollector(attr => new ReleaseEnvironmentStatusCollector(this._connectionFactory, attr));
 
             context
                 .AddBindingRule<TestPlanClientAttribute>()
-                .BindToInput<TestPlanHttpClient>((_) => TestPlanClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<TestPlanHttpClient>(attr => attr.CreateClient(this._connectionFactory));
 
             context
                 .AddBindingRule<WorkClientAttribute>()
-                .BindToInput<WorkHttpClient>((_) => WorkClientAttribute.CreateClient(this._vssConnection));
+                .BindToInput<WorkHttpClient>(attr => attr.CreateClient(this._connectionFactory));
         }
 
-        private readonly VssConnection _vssConnection;
+        private readonly VssConnectionFactory _connectionFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly INameResolver _nameResolver;
     }

@@ -20,9 +20,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public PullRequestStatusChangedWatcherEntity(ILogger log, VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public PullRequestStatusChangedWatcherEntity(ILogger log, VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
             this._log = log;
         }
@@ -42,7 +42,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 Status = PullRequestStatus.All
             };
 
-            var client = await this._connection.GetClientAsync<GitHttpClient>();
+            var client = await this._connFactory.GetVssConnection(attribute).GetClientAsync<GitHttpClient>();
 
             // Storing here the items which function invocation failed for. So that they are only retried during next polling session.
             var failedIds = new HashSet<int>();
@@ -115,7 +115,7 @@ namespace AzFunc4DevOps.AzureDevOps
             Entity.Current.DeleteState();
         }
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly ILogger _log;
 

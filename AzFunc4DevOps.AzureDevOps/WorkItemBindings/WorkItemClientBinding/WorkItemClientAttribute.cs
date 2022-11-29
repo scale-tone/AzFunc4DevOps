@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
@@ -11,11 +10,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class WorkItemClientAttribute : Attribute
+    public class WorkItemClientAttribute : GenericBindingAttribute
     {
-        public static WorkItemTrackingHttpClient CreateClient(VssConnection connection)
+        /// <inheritdoc />
+        internal WorkItemTrackingHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<WorkItemTrackingHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<WorkItemTrackingHttpClient>();
         }
     }
 }

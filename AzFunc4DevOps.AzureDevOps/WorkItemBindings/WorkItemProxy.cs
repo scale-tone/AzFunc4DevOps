@@ -528,7 +528,7 @@ namespace AzFunc4DevOps.AzureDevOps
         /// <summary>
         /// Snapshot of this object, in JSON form. Used for change detection.
         /// </summary>
-        public JObject OriginalJson { get; protected set; }
+        public JObject OriginalJson { get; set; }
 
         internal static WorkItemProxy FromWorkItem(WorkItem item, Type specificType = null)
         {

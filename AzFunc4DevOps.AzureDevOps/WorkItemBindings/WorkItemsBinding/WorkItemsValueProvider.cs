@@ -10,16 +10,20 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class WorkItemsValueProvider : IValueBinder
     {
-        public WorkItemsValueProvider(VssConnection connection, WorkItemsAttribute attr)
+        /// <inheritdoc />
+        public WorkItemsValueProvider(VssConnectionFactory connFactory, WorkItemsAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._attribute = attr;
         }
 
+        /// <inheritdoc />
         public Type Type => typeof(IEnumerable<WorkItemProxy>);
 
+        /// <inheritdoc />
         public async Task<object> GetValueAsync()
         {
             var client = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
@@ -35,11 +39,13 @@ namespace AzFunc4DevOps.AzureDevOps
             return this.IterateThroughResults(client, idsResult.WorkItems.Select(w => w.Id));
         }
 
+        /// <inheritdoc />
         public Task SetValueAsync(object value, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public string ToInvokeString()
         {
             return $"{this._attribute.Project}-{this._attribute.WiqlQueryWhereClause}";

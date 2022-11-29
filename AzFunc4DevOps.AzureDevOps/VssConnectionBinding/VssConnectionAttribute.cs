@@ -8,7 +8,7 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class VssConnectionAttribute : Attribute
+    public class VssConnectionAttribute : GenericBindingAttribute
     {
     }
 }

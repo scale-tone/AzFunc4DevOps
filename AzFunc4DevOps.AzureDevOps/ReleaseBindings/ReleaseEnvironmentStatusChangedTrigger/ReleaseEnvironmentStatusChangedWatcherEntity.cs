@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
@@ -22,9 +21,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public ReleaseEnvironmentStatusChangedWatcherEntity(ILogger log, VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public ReleaseEnvironmentStatusChangedWatcherEntity(ILogger log, VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
             this._log = log;
         }
@@ -48,7 +47,7 @@ namespace AzFunc4DevOps.AzureDevOps
             // This flag is to ensure that this heuristics doesn't cause the trigger to fire twice.
             var shouldBeTriggeredOnlyOnce = (!string.IsNullOrWhiteSpace(attribute.FromValue)) || (!string.IsNullOrWhiteSpace(attribute.ToValue));
 
-            var releaseClient = await this._connection.GetClientAsync<ReleaseHttpClient>();
+            var releaseClient = await this._connFactory.GetVssConnection(attribute).GetClientAsync<ReleaseHttpClient>();
 
             // Storing here the items which function invocation failed for. So that they are only retried during next polling session.
             var failedIds = new HashSet<(int, int)>();
@@ -177,7 +176,7 @@ namespace AzFunc4DevOps.AzureDevOps
 
         private static readonly EnvironmentStatus AlreadyTriggeredFlag = (EnvironmentStatus)0x40000000;
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly ILogger _log;
 

@@ -11,11 +11,11 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class BuildClientAttribute : Attribute
+    public class BuildClientAttribute : GenericBindingAttribute
     {
-        internal static BuildHttpClient CreateClient(VssConnection connection)
+        internal BuildHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<BuildHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<BuildHttpClient>();
         }
     }
 }

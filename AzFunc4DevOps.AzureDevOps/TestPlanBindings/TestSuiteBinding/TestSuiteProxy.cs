@@ -19,7 +19,7 @@ namespace AzFunc4DevOps.AzureDevOps
         /// <summary>
         /// Snapshot of this object, in JSON form. Used for change detection.
         /// </summary>
-        public JObject OriginalJson { get; protected set; }
+        public JObject OriginalJson { get; set; }
 
         internal List<TestCaseId> OriginalTestCases { get; private set; }
 

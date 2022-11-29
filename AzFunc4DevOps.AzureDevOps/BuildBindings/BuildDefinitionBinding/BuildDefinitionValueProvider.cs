@@ -7,17 +7,21 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <inheritdoc />
     public class BuildDefinitionValueProvider : IValueBinder
     {
-        public BuildDefinitionValueProvider(VssConnection connection, BuildDefinitionAttribute attr)
+        /// <inheritdoc />
+        public BuildDefinitionValueProvider(VssConnectionFactory connFactory, BuildDefinitionAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
             this._buildDefinitionId = int.Parse(attr.Id);
         }
 
+        /// <inheritdoc />
         public Type Type => typeof(BuildDefinitionProxy);
 
+        /// <inheritdoc />
         public async Task<object> GetValueAsync()
         {
             var client = await this._connection.GetClientAsync<BuildHttpClient>();
@@ -29,11 +33,13 @@ namespace AzFunc4DevOps.AzureDevOps
             return proxy;
         }
 
+        /// <inheritdoc />
         public Task SetValueAsync(object value, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public string ToInvokeString()
         {
             return $"{this._project}-{this._buildDefinitionId}";

@@ -7,7 +7,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
-using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 
@@ -21,9 +20,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public ReleaseCreatedWatcherEntity(VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public ReleaseCreatedWatcherEntity(VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
         }
 
@@ -41,7 +40,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 definitionId = int.Parse(attribute.ReleaseDefinitionId);
             }
 
-            var releaseClient = await this._connection.GetClientAsync<ReleaseHttpClient>();
+            var releaseClient = await this._connFactory.GetVssConnection(attribute).GetClientAsync<ReleaseHttpClient>();
 
             while (true)
             {
@@ -96,7 +95,7 @@ namespace AzFunc4DevOps.AzureDevOps
             Entity.Current.DeleteState();
         }
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
 
         private async Task InvokeFunction(ReleaseHttpClient client, string project, int releaseId)

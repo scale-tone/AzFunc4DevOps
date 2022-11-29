@@ -8,18 +8,22 @@ using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+        /// <inheritdoc />
     public class WorkItemValueProvider : IValueBinder
     {
-        public WorkItemValueProvider(VssConnection connection, WorkItemAttribute attr)
+        /// <inheritdoc />
+        public WorkItemValueProvider(VssConnectionFactory connFactory, WorkItemAttribute attr)
         {
-            this._connection = connection;
+            this._connection = connFactory.GetVssConnection(attr);
             this._project = attr.Project;
             this._id = int.Parse(attr.Id);
             this.Type = attr.GetSpecificWorkItemType();
         }
 
+        /// <inheritdoc />
         public Type Type { get; private set; }
 
+        /// <inheritdoc />
         public async Task<object> GetValueAsync()
         {
             var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
@@ -31,11 +35,13 @@ namespace AzFunc4DevOps.AzureDevOps
             return proxy;
         }
 
+        /// <inheritdoc />
         public Task SetValueAsync(object value, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public string ToInvokeString()
         {
             return $"{this._project}-{this._id}";

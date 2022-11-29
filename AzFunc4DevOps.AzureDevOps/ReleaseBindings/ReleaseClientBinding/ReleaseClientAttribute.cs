@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Azure.WebJobs.Description;
-using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 
 namespace AzFunc4DevOps.AzureDevOps 
@@ -10,11 +9,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class ReleaseClientAttribute : Attribute
+    public class ReleaseClientAttribute : GenericBindingAttribute
     {
-        public static ReleaseHttpClient CreateClient(VssConnection connection)
+        /// <inheritdoc />
+        public ReleaseHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<ReleaseHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<ReleaseHttpClient>();
         }
     }
 }

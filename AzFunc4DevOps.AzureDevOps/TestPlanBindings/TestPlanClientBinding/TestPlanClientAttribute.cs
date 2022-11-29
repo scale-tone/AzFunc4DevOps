@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps 
 {
@@ -11,11 +10,12 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     [Binding]    
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class TestPlanClientAttribute : Attribute
+    public class TestPlanClientAttribute : GenericBindingAttribute
     {
-        public static TestPlanHttpClient CreateClient(VssConnection connection)
+        /// <inheritdoc />
+        public TestPlanHttpClient CreateClient(VssConnectionFactory connFactory)
         {
-            return connection.GetClient<TestPlanHttpClient>();
+            return connFactory.GetVssConnection(this).GetClient<TestPlanHttpClient>();
         }
     }
 }

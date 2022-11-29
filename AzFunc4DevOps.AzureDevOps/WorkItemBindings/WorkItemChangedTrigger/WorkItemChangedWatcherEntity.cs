@@ -9,7 +9,6 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
@@ -21,9 +20,9 @@ namespace AzFunc4DevOps.AzureDevOps
 
         #endregion
 
-        public WorkItemChangedWatcherEntity(ILogger log, VssConnection connection, TriggerExecutorRegistry executorRegistry)
+        public WorkItemChangedWatcherEntity(ILogger log, VssConnectionFactory connFactory, TriggerExecutorRegistry executorRegistry)
         {
-            this._connection = connection;
+            this._connFactory = connFactory;
             this._executorRegistry = executorRegistry;
             this._log = log;
         }
@@ -41,13 +40,13 @@ namespace AzFunc4DevOps.AzureDevOps
                 return;
             }
 
-            var workItemClient = await this._connection.GetClientAsync<WorkItemTrackingHttpClient>();
+            var workItemClient = await this._connFactory.GetVssConnection(attribute).GetClientAsync<WorkItemTrackingHttpClient>();
 
             // Storing here the workItems which function invocation failed for. So that they are only retried during next polling session.
             var failedWorkItemIds = new HashSet<int>();
             while (true)
             {
-                string whereClause = $"[System.CreatedDate] > @StartOfDay('-{ObservationPeriodInDays}d') AND " + 
+                string whereClause = $"[System.ChangedDate] > @StartOfDay('-{ObservationPeriodInDays}d') AND " + 
                     $"[System.TeamProject] = '{attribute.Project}'" +
                     (string.IsNullOrEmpty(attribute.WiqlQueryWhereClause) ? "" : " AND " + attribute.WiqlQueryWhereClause);
 
@@ -216,7 +215,7 @@ namespace AzFunc4DevOps.AzureDevOps
         // TODO: Turn into a setting
         private const int ObservationPeriodInDays = 90;
 
-        private readonly VssConnection _connection;
+        private readonly VssConnectionFactory _connFactory;
         private readonly TriggerExecutorRegistry _executorRegistry;
         private readonly ILogger _log;
         

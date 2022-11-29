@@ -2,6 +2,9 @@ using System;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Config Settings
+    /// </summary>
     public static class Settings
     {
         /// <summary>
