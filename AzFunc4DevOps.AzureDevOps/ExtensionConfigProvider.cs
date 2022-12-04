@@ -146,6 +146,12 @@ namespace AzFunc4DevOps.AzureDevOps
                 (attr, type) => Task.FromResult(new WorkItemValueProvider(this._connectionFactory, attr) as IValueBinder)
             );
 
+            var testPlanRule = context.AddBindingRule<TestPlanAttribute>();
+            testPlanRule.BindToCollector(attr => new TestPlanCollector(this._connectionFactory, attr));
+            testPlanRule.BindToValueProvider(
+                (attr, type) => Task.FromResult(new TestPlanValueProvider(this._connectionFactory, attr) as IValueBinder)
+            );
+
             var testSuiteRule = context.AddBindingRule<TestSuiteAttribute>();
             testSuiteRule.BindToCollector(attr => new TestSuiteCollector(this._connectionFactory, attr));
             testSuiteRule.BindToValueProvider(

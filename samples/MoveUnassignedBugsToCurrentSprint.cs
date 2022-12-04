@@ -19,7 +19,7 @@ namespace AzFunc4DevOps.Samples
         public static async Task Run
         (
             // Every midnight
-            [TimerTrigger("* * 0 * * *")] TimerInfo timer,
+            [TimerTrigger("0 * * * * *")] TimerInfo timer,
 
             // Bind to a collection of unassigned bugs
             [WorkItems(
@@ -48,7 +48,10 @@ namespace AzFunc4DevOps.Samples
             // Iterating through bugs
             foreach(var bug in unassignedBugs)
             {
-                bug.IterationPath = currentIteration?.Path;
+                bug.Fields["System.AssignedTo"] = "kolepes@microsoft.com";
+                bug.IterationPath = @"TinoPartsUnlimited\Sprint 6";
+
+                //                bug.IterationPath = currentIteration?.Path;
 
                 // Saving changes, if any (WorkItemProxy tracks changes to itself, so this line will be a noop, if there were no actual changes)
                 await results.AddAsync(bug);

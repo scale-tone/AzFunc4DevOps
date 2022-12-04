@@ -11,28 +11,93 @@ namespace AzFunc4DevOps.AzureDevOps
     /// </summary>
     public class TestSuiteProxy : TestSuite
     {
+        private int _planId;
+
+        /// <summary>
+        /// Id of Test Plan this Test Suite belongs to
+        /// </summary>
+        public int PlanId 
+        { 
+            get 
+            { 
+                return this.Plan?.Id ?? this._planId; 
+            }
+
+            set
+            {                
+                this._planId = value;
+
+                if (this.Plan != null)
+                {
+                    this.Plan.Id = value;
+                }
+            }
+        }
+
         /// <summary>
         /// List of Test Cases in this Test Suite.
         /// </summary>
-        public ICollection<TestCaseId> TestCases { get; private set; }
+        public ICollection<TestCaseId> TestCases { get; private set; } = new List<TestCaseId>();
 
         /// <summary>
         /// Snapshot of this object, in JSON form. Used for change detection.
         /// </summary>
         public JObject OriginalJson { get; set; }
 
-        internal List<TestCaseId> OriginalTestCases { get; private set; }
+        internal List<TestCaseId> OriginalTestCases { get; private set; } = new List<TestCaseId>();
 
-        internal static TestSuiteProxy FromTestSuite(TestSuite item, List<TestCaseId> testCases = null)
+        /// <inheritdoc />
+        public TestSuiteProxy()
+        {
+            this.DefaultConfigurations = new List<TestConfigurationReference>();
+            this.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
+        }
+
+        /// <inheritdoc />
+        public static TestSuiteProxy FromTestSuite(TestSuite item, List<TestCaseId> testCases = null)
         {
             var jObject = JObject.FromObject(item);
             var proxy = jObject.ToObject<TestSuiteProxy>();
+
+            if (proxy.DefaultConfigurations == null)
+            {
+                proxy.DefaultConfigurations = new List<TestConfigurationReference>();
+            }
+
+            if (proxy.DefaultTesters == null)
+            {
+                proxy.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
+            }
 
             // Preserving the original values, to be able to detect changes later
             proxy.OriginalJson = jObject;
 
             proxy.TestCases = testCases ?? new List<TestCaseId>();
             proxy.OriginalTestCases = proxy.TestCases.ToList();
+
+            return proxy;
+        }
+
+        /// <inheritdoc />
+        public static TestSuiteProxy FromTestSuiteReference(TestSuiteReference item, int planId)
+        {
+            var proxy = new TestSuiteProxy();
+
+            proxy.Id = item.Id;
+            proxy.Name = item.Name;
+            proxy.PlanId = planId;
+
+            if (proxy.DefaultConfigurations == null)
+            {
+                proxy.DefaultConfigurations = new List<TestConfigurationReference>();
+            }
+
+            if (proxy.DefaultTesters == null)
+            {
+                proxy.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
+            }
+
+            proxy.OriginalJson = JObject.FromObject(proxy);
 
             return proxy;
         }

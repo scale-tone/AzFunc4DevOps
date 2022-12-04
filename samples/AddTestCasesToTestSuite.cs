@@ -8,7 +8,7 @@ using System.IO;
 
 namespace AzFunc4DevOps.Samples
 {
-    public static class CreateTestCases
+    public static class AddTestCasesToTestSuite
     {
         /*
             Creates Test Cases and assigns them to a given root Test Suite (identified by its testPlanId).
@@ -43,7 +43,7 @@ namespace AzFunc4DevOps.Samples
                     }
                 ]
         */
-        [FunctionName(nameof(CreateTestCases))]
+        [FunctionName(nameof(AddTestCasesToTestSuite))]
         // Need to return the given Test Suite, to indicate that changes to it need to be persisted
         [return: TestSuite(Project = "%TEAM_PROJECT_NAME%")]
         public static TestSuiteProxy Run(
