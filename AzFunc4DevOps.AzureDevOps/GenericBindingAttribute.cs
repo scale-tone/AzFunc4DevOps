@@ -21,6 +21,7 @@ namespace AzFunc4DevOps.AzureDevOps
         /// If specified, supersedes <see cref="Settings.AZFUNC4DEVOPS_AZURE_DEVOPS_PAT"/> setting.
         /// </summary>
         [AutoResolve]
+        [JsonIgnore]
         public string PersonalAccessToken { get; set; }
 
         /// <summary>
