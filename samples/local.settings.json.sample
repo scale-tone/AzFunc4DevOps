@@ -9,6 +9,14 @@
 
     "TEAM_PROJECT_NAME": "@KeeShepherd(MyAzureDevOpsProjectName)",
     "BUILD_DEFINITION_ID": "24",
-    "RELEASE_DEFINITION_ID": "3"
+    "RELEASE_DEFINITION_ID": "3",
+
+    "AZURE_DEVOPS_ORG_URL_1": "@KeeShepherd(MyAzureDevOpsOrgUrl)",
+    "AZURE_DEVOPS_PAT_1": "@KeeShepherd(MyAzureDevOpsPat)",
+    "TEAM_PROJECT_NAME_1": "@KeeShepherd(MyAzureDevOpsProjectName)",
+
+    "AZURE_DEVOPS_ORG_URL_2": "@KeeShepherd(MyAzureDevOpsOrgUrl2)",
+    "AZURE_DEVOPS_PAT_2": "@KeeShepherd(MyAzureDevOpsPat2)",
+    "TEAM_PROJECT_NAME_2": "@KeeShepherd(MyAzureDevOpsProjectName2)"
   }
 }

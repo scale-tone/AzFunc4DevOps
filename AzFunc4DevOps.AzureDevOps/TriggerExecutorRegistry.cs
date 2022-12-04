@@ -6,6 +6,9 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 
 namespace AzFunc4DevOps.AzureDevOps
 {
+    /// <summary>
+    /// Maps Watcher Entities with their related ITriggeredFunctionExecutor instances
+    /// </summary>
     public class TriggerExecutorRegistry
     {
         private class AttributeAndExecutor

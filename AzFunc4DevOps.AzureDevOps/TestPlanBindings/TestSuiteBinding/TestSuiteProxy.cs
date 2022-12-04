@@ -47,27 +47,10 @@ namespace AzFunc4DevOps.AzureDevOps
         internal List<TestCaseId> OriginalTestCases { get; private set; } = new List<TestCaseId>();
 
         /// <inheritdoc />
-        public TestSuiteProxy()
-        {
-            this.DefaultConfigurations = new List<TestConfigurationReference>();
-            this.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
-        }
-
-        /// <inheritdoc />
         public static TestSuiteProxy FromTestSuite(TestSuite item, List<TestCaseId> testCases = null)
         {
             var jObject = JObject.FromObject(item);
             var proxy = jObject.ToObject<TestSuiteProxy>();
-
-            if (proxy.DefaultConfigurations == null)
-            {
-                proxy.DefaultConfigurations = new List<TestConfigurationReference>();
-            }
-
-            if (proxy.DefaultTesters == null)
-            {
-                proxy.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
-            }
 
             // Preserving the original values, to be able to detect changes later
             proxy.OriginalJson = jObject;
@@ -87,33 +70,9 @@ namespace AzFunc4DevOps.AzureDevOps
             proxy.Name = item.Name;
             proxy.PlanId = planId;
 
-            if (proxy.DefaultConfigurations == null)
-            {
-                proxy.DefaultConfigurations = new List<TestConfigurationReference>();
-            }
-
-            if (proxy.DefaultTesters == null)
-            {
-                proxy.DefaultTesters = new List<Microsoft.VisualStudio.Services.WebApi.IdentityRef>();
-            }
-
             proxy.OriginalJson = JObject.FromObject(proxy);
 
             return proxy;
-        }
-
-        internal TestSuiteUpdateParams ToUpdateParams()
-        {
-            return new TestSuiteUpdateParams
-            {
-                Name = this.Name,
-                ParentSuite = this.ParentSuite,
-                QueryString = this.QueryString,
-                InheritDefaultConfigurations = this.InheritDefaultConfigurations,
-                DefaultConfigurations = this.DefaultConfigurations,
-                DefaultTesters = this.DefaultTesters,
-                Revision = this.Revision
-            };
         }
     }
 

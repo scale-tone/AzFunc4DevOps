@@ -55,16 +55,31 @@ namespace AzFunc4DevOps.AzureDevOps
             }
             else if (!JToken.DeepEquals(suite.OriginalJson, JObject.FromObject(suite)))
             {
+                /*
+                    NOTE: there're TWO versions of this API.
+                        https://learn.microsoft.com/en-us/rest/api/azure/devops/test/test-suites/update-test-suite?view=azure-devops-rest-5.0&tabs=HTTP
+                        https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/test-suites/update?view=azure-devops-rest-5.0&tabs=HTTP
+
+                    So far using the first one, because it seems to work.
+                */
+
                 string uri = $"{this._orgUrl.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}?api-version=5.0";
 
                 using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicCredentials);
 
-                    string bodyJson = JsonConvert.SerializeObject(suite.ToUpdateParams(), new JsonSerializerSettings
+                    var body = new
                     {
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    });
+                        // NOTE: intentionally omitting .ParentSuite, because the endpoint doesn't allow to change it
+                        name = suite.Name,
+                        queryString = suite.QueryString,
+                        inheritDefaultConfigurations = suite.InheritDefaultConfigurations,
+                        defaultConfigurations = suite.DefaultConfigurations,
+                        defaultTesters = suite.DefaultTesters
+                    };
+
+                    string bodyJson = JsonConvert.SerializeObject(body);
 
                     request.Content = new StringContent(bodyJson, Encoding.UTF8, "application/json");
 
@@ -86,6 +101,16 @@ namespace AzFunc4DevOps.AzureDevOps
                 // Dropping all previously existed test cases
                 string ids = string.Join(",", suite.OriginalTestCases.Select(tc => tc.Id));
 
+                /* 
+                    NOTE: there're TWO versions of this API:
+                        https://learn.microsoft.com/en-us/rest/api/azure/devops/test/test-suites/remove-test-cases-from-suite-url?view=azure-devops-rest-5.0&tabs=HTTP
+                        and
+                        https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/suite-test-case/remove-test-cases-from-suite?view=azure-devops-rest-5.0
+
+                    They do the same thing, but operate differently.
+                    So far using the first one (although ADO portal uses the second).
+                */
+
                 string uri = $"{this._orgUrl.Trim('/')}/{this._project}/_apis/test/Plans/{suite.Plan.Id}/suites/{suite.Id}/testcases/{ids}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Delete, uri))
                 {
@@ -103,6 +128,16 @@ namespace AzFunc4DevOps.AzureDevOps
             // TODO: find a way to optimize (not just drop/add test cases, but do it in a smarter way)
             foreach (var testCase in suite.TestCases)
             {
+                /*
+                    NOTE: there're MANY versions of this API.
+
+                    https://learn.microsoft.com/en-us/rest/api/azure/devops/test/test-suites/add?view=azure-devops-rest-5.0&tabs=HTTP
+                    https://learn.microsoft.com/en-us/rest/api/azure/devops/testplan/suite-test-case/update?view=azure-devops-rest-5.0
+                    ... and more
+
+                    So far using this one: https://learn.microsoft.com/en-us/rest/api/azure/devops/test/test-suites/add?view=azure-devops-rest-5.0&tabs=HTTP
+                */
+
                 string uri = $"{this._orgUrl.Trim('/')}/{this._project}/_apis/test/Plans/{suite.PlanId}/suites/{suite.Id}/testcases/{testCase.Id}?api-version=5.0";
                 using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
                 {
@@ -119,6 +154,7 @@ namespace AzFunc4DevOps.AzureDevOps
                 {
                     // Also updating assigned configurations
                     // TODO: find a way to do it via a single request
+                    // NOTE: so far using this API: https://learn.microsoft.com/en-us/rest/api/azure/devops/test/test-suites/update-suite-test-cases?view=azure-devops-rest-5.0&tabs=HTTP
 
                     using (var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri))
                     {
