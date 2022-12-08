@@ -15,7 +15,7 @@ As a prerequisite, you will need [Azure Functions Core Tools installed on your d
 
 #### 2. Install [AzFunc4DevOps.AzureDevOps](https://www.nuget.org/packages/AzFunc4DevOps.AzureDevOps) NuGet package:
 ```
-  dotnet add package AzFunc4DevOps.AzureDevOps --prerelease
+  dotnet add package AzFunc4DevOps.AzureDevOps
 ```
 
 #### 3. Open the folder in Visual Studio Code:
