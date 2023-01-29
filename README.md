@@ -4,6 +4,10 @@ A set of [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guid
 
 [<img alt="Nuget" src="https://img.shields.io/nuget/v/AzFunc4DevOps.AzureDevOps?label=current%20version">](https://www.nuget.org/profiles/AzFunc4DevOps) 
 
+[<img alt="Nuget" src="https://img.shields.io/nuget/v/AzFunc4DevOps.AzureDevOps?label=nuget%20downloads">](https://www.nuget.org/profiles/AzFunc4DevOps)
+
+[![.NET](https://github.com/scale-tone/AzFunc4DevOps/actions/workflows/dotnet.yml/badge.svg)](https://github.com/scale-tone/AzFunc4DevOps/actions/workflows/dotnet.yml)
+
 ## How to use
 
 As a prerequisite, you will need [Azure Functions Core Tools installed on your devbox](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local#install-the-azure-functions-core-tools).
