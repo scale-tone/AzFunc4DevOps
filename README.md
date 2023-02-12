@@ -2,7 +2,7 @@
 
 A set of [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guide/what-is-azure-devops) Triggers and Bindings for [Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/). Leverages [Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/) platform to simplify integration, automation, import/export and data synchronization scenarios for [Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/user-guide/what-is-azure-devops).
 
-[<img alt="Nuget" src="https://img.shields.io/nuget/v/AzFunc4DevOps.AzureDevOps?label=current%20version">](https://www.nuget.org/profiles/AzFunc4DevOps) 
+[<img alt="Nuget" src="https://img.shields.io/nuget/v/AzFunc4DevOps.AzureDevOps?label=current%20version">](https://www.nuget.org/profiles/AzFunc4DevOps) [<img alt="Nuget" src="https://img.shields.io/nuget/dt/AzFunc4DevOps.AzureDevOps?label=nuget%20downloads">](https://www.nuget.org/profiles/AzFunc4DevOps) [![.NET](https://github.com/scale-tone/AzFunc4DevOps/actions/workflows/dotnet.yml/badge.svg)](https://github.com/scale-tone/AzFunc4DevOps/actions/workflows/dotnet.yml)
 
 ## How to use
 
@@ -46,6 +46,8 @@ Alternatively open the project in Visual Studio or any other IDE of your choice.
   `AZFUNC4DEVOPS_AZURE_DEVOPS_PAT` is your Azure DevOps Personal Access Token. [Create one in Azure DevOps portal](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate#create-a-pat). Alternatively use [KeeShepherd](https://marketplace.visualstudio.com/items?itemName=kee-shepherd.kee-shepherd-vscode) tool for creating and safely handling it. 
     
   NOTE: the PAT needs to be given all [relevant scopes](https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/oauth?view=azure-devops#scopes). E.g. if your Function is going to read/write Work Items, then `vso.work_write` will be needed.
+  
+  As an alternative to `AZFUNC4DEVOPS_AZURE_DEVOPS_ORG_URL` and `AZFUNC4DEVOPS_AZURE_DEVOPS_PAT` settings you can specify `OrgUrl` and `PersonalAccessToken` properties in every trigger/binding attribute. Those properties (just like any other trigger/binding attribute property) also support `%MY-SETTING-NAME%` syntax. See [the example here](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/CloneBugsIntoDifferentOrg.cs#L23).
 
 
 #### 5. Start adding Functions that use AzFunc4DevOps triggers and bindings. 
