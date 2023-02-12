@@ -19,5 +19,3 @@ A set of sample Azure Functions utilizing AzFunc4DevOps.AzureDevOps triggers and
 ```
   func start
 ```
-
-NOTE: this sample project intentionally references AzFunc4DevOps directly (as a CSPROJ-file). In your code you should instead install [AzFunc4DevOps.AzureDevOps](https://www.nuget.org/packages/AzFunc4DevOps.AzureDevOps) NuGet package.
