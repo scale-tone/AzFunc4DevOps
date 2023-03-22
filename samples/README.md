@@ -10,6 +10,8 @@ A set of sample Azure Functions utilizing AzFunc4DevOps.AzureDevOps triggers and
 * [TriggerBuildWhenPullRequestCompleted](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/TriggerBuildWhenPullRequestCompleted.cs) - triggers a Build once Pull Request is completed into master branch.
 * [UpdateWorkItemDescription](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/UpdateWorkItemDescription.cs) - updates Description field of a given workItem, identified by its workItemId. HTTP-triggered, expects the new Description value in request's body.
 * [CloneBugsIntoDifferentOrg](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/CloneBugsIntoDifferentOrg.cs) - whenever a bug is created in Org1, creates its clone in Org2. Demonstrates how to connect/use multiple orgs and different projects.
+* [SetTestCaseExecutionResult](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/SetTestCaseExecutionResult.cs) - marks a given Test Case as Passed or Failed. HTTP-triggered, expects an HTTP POST request with the following query string: `caseId=123&suiteId=456&planId=789&outcome=<passed|failed>`.
+
 
 ## How to run
 
