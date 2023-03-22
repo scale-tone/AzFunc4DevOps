@@ -4,7 +4,7 @@ A set of sample Azure Functions utilizing AzFunc4DevOps.AzureDevOps triggers and
 
 * [AlignRemainingWorkWithCompletedWork](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/AlignRemainingWorkWithCompletedWork.cs) - whenever Task's CompletedWork field changes, updates its RemainingWork field accordingly.
 * [AddTestCasesToTestSuite](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/AddTestCasesToTestSuite.cs) - creates Test Cases and assigns them to a given root Test Suite (identified by its testPlanId). HTTP-triggered, expects a JSON array of test cases in request's body.
-* [CreateTestSuiteForBug](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/CreateTestSuiteForBug.cs) - Whenever a bug is created, creates a Test Suite for it.
+* [CreateTestSuiteForBug](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/CreateTestSuiteForBug.cs) - whenever a bug is created, creates a Test Suite for it.
 * [BringUnassignedBugsToCurrentSprint](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/BringUnassignedBugsToCurrentSprint.cs) - periodically collects all unassigned bugs and moves them into current iteration.
 * [PassVariablesBetweenReleaseStages](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/PassVariablesBetweenReleaseStages.cs) - demonstrates how to pass variables between Release Environments (Stages).
 * [TriggerBuildWhenPullRequestCompleted](https://github.com/scale-tone/AzFunc4DevOps/blob/main/samples/TriggerBuildWhenPullRequestCompleted.cs) - triggers a Build once Pull Request is completed into master branch.

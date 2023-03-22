@@ -95,6 +95,7 @@ You can find more sample Functions [in the samples folder](https://github.com/sc
 
 See the [documentation in our Wiki](https://github.com/scale-tone/AzFunc4DevOps/wiki).
 
+Also see [this introductory blog post about AzFunc4DevOps here](https://scale-tone.github.io/2023/02/14/azfunc4devops).
 
 ## Contributing
 
